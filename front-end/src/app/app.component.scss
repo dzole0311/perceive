@@ -1,0 +1,14 @@
+@use "stylesheets/typography";
+@use "stylesheets/variables";
+@use "stylesheets/layout";
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.main {
+  height: 100%;
+  margin-left: 130px;
+}
