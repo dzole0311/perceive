@@ -1,14 +1,74 @@
-@use "stylesheets/typography";
-@use "stylesheets/variables";
-@use "stylesheets/layout";
+@import "../assets/stylesheets/normalize";
+@import '~ngx-toastr/toastr';
+@import "../assets/stylesheets/fonts";
+@import "../assets/stylesheets/toast";
 
-html,
-body {
+:root {
+  --main-color: #3F51B5;
+  --secondary-color: #5C6BC0;
+  --accent-color: #FFC107;
+  --accent2-color: #EDEDED;
+  --dark-gray: #212121;
+  --error-color: #B00020;
+  --scrollbarBG: #CFD8DC;
+  --scrollbarThumbColor: #90A4AE;
+}
+
+html, body {
   height: 100%;
   margin: 0;
 }
 
-.main {
-  height: 100%;
-  margin-left: 130px;
+p, h1, h2, h3, h4, h5, span, a {
+  margin: 0;
+  font-family: 'Roboto', serif;
+  font-weight: 400;
+}
+
+.card {
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+
+  &__item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__icon {
+    height: 50px;
+    min-width: 80px;
+
+    &--sm {
+      min-width: auto;
+      height: 25px;
+    }
+  }
+
+  &__title {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+}
+
+// Scrollbar stylings
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbarThumbColor) var(--scrollbarBG);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbarThumbColor) ;
+  border-radius: 3px;
+  border: 2px solid var(--scrollbarBG);
 }

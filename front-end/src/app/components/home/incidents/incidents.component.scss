@@ -1,0 +1,30 @@
+.card {
+  max-height: 400px;
+  overflow-y: auto;
+
+  &__item {
+    display: flex;
+    padding: 15px 5px;
+
+    &:nth-child(even) {
+      background-color: #EDE7F6;
+    }
+  }
+
+  &__item span {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+
+  &__item span:nth-child(1),
+  &__item span:nth-child(2) {
+    margin-right: 20px;
+  }
+
+  &__icon {
+    height: 18px;
+    min-width: auto;
+    margin-right: 10px;
+  }
+}

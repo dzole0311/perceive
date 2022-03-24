@@ -1,0 +1,18 @@
+.sidebar {
+  display: flex;
+  height: 100px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 50px;
+  background-color: var(--main-color);
+
+  &__top {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+
+  fa-icon {
+    color: #ffffff;
+  }
+}

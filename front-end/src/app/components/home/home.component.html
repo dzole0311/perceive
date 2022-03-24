@@ -1,4 +1,6 @@
-<app-chart></app-chart>
-<app-system-overview></app-system-overview>
-<app-cpu-load></app-cpu-load>
-<app-incidents></app-incidents>
+<div class="main">
+  <app-chart [timeSeriesData]="timeSeries"></app-chart>
+  <app-cpu-load [timeSeriesData]="timeSeries"></app-cpu-load>
+  <app-system-overview [systemOverviewData]="systemOverview"></app-system-overview>
+  <app-incidents [timeSeriesData]="timeSeries"></app-incidents>
+</div>

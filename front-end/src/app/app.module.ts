@@ -10,7 +10,11 @@ import { SystemOverviewComponent } from './components/home/system-overview/syste
 import { AboutComponent } from './components/about/about.component';
 import { HomeComponent } from './components/home/home.component';
 import { IncidentsComponent } from './components/home/incidents/incidents.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ChartModule } from 'angular-highcharts';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ToastrModule } from "ngx-toastr";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -21,12 +25,20 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     AboutComponent,
     HomeComponent,
     IncidentsComponent,
-    NavbarComponent
+    SidebarComponent
   ],
   imports: [
+    ChartModule,
     BrowserModule,
     AppRoutingModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    FontAwesomeModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      preventDuplicates: false,
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right'
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

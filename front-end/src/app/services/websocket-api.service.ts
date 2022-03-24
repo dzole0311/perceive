@@ -6,16 +6,26 @@ import {BehaviorSubject} from "rxjs";
   providedIn: 'root'
 })
 export class WebsocketApiService {
-  public metricsPayload: BehaviorSubject<[]> = new BehaviorSubject<[]>([]);
-  private subject = webSocket("ws://localhost:8999");
+  public metricsPayload: BehaviorSubject<any> = new BehaviorSubject<any>({
+    timeSeries: {
+      timestamp: 0,
+      value: 0
+    },
+    systemOverview: {
+      platform: '',
+      uptime: 0,
+      cpuCount: 0,
+      totalMem: 0,
+      freeMem: 0
+    }
+  });
+  private subject = webSocket("ws://localhost:3000");
 
   constructor() {
     this.subject.subscribe(
-      (msg) => {
-        console.log(msg);
-      }, // Called whenever there is a message from the server.
-      err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-      () => console.log('complete') // Called when connection is closed (for whatever reason).
+      msg => this.metricsPayload.next(msg),
+      err => console.log('error'),
+      () => console.log('complete')
     );
   }
 }

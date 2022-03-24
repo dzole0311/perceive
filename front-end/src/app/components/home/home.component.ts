@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject} from "rxjs";
 import {WebsocketApiService} from "../../services/websocket-api.service";
 
 @Component({
@@ -8,13 +7,15 @@ import {WebsocketApiService} from "../../services/websocket-api.service";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  public metricsPayload: BehaviorSubject<[]> = new BehaviorSubject<[]>([]);
+  public systemOverview: any;
+  public timeSeries: any;
 
   constructor(private websocketApi: WebsocketApiService) { }
 
   ngOnInit(): void {
     this.websocketApi.metricsPayload.subscribe((msg) => {
-      this.metricsPayload.next(msg);
+      this.timeSeries = msg.timeSeries;
+      this.systemOverview = msg.systemOverview;
     });
   }
 

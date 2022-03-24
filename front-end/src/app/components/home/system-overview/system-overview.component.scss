@@ -1,0 +1,32 @@
+.card {
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  &__item {
+    display: flex;
+    flex-basis: 50%;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 180px;
+  }
+
+  &__icon {
+    margin-right: 10px;
+  }
+
+  .summary {
+
+    &__item-value {
+      font-size: 36px;
+    }
+
+    &__item-description {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
