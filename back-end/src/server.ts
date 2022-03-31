@@ -1,14 +1,14 @@
 import * as express from 'express';
 import * as http from 'http';
 import * as WebSocket from 'ws';
+import * as os from 'os';
+const { windowsLoadAvg } = require('loadavg-windows');
 import {INTERVAL} from "./constants";
 
 const app = express();
 const server = http.createServer(app);
 const ws = new WebSocket.Server({ server: server });
-const osu = require('node-os-utils');
-const cpu = osu.cpu
-const os = require('node-os-utils').os;
+
 
 // Interfaces
 
@@ -43,13 +43,13 @@ function generatePayload() {
     msg.timeSeries = updateTimeSeries();
     msg.systemOverview.platform = os.platform();
     msg.systemOverview.uptime = os.uptime();
-    msg.systemOverview.cpuCount = cpu.count();
+    msg.systemOverview.cpuCount = os.cpus().length;
 
     return JSON.stringify(msg);
 }
 
 function updateTimeSeries() {
-    timeSeries.push([new Date().getTime(), (cpu.loadavg()[0] / cpu.count()) * 100]);
+    timeSeries.push([new Date().getTime(), os.platform() === 'linux' ? (os.loadavg()[0] / os.cpus().length) * 100 : windowsLoadAvg()]);
     timeSeries.shift();
     return timeSeries;
 }
@@ -78,6 +78,6 @@ let msg: Message = {
     systemOverview: {
         platform: os.platform(),
         uptime: os.uptime(),
-        cpuCount: cpu.count()
+        cpuCount: os.cpus().length
     }
 }
