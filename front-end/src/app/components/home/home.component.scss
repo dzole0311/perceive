@@ -1,30 +1,11 @@
 @import './src/assets/stylesheets/layout';
 
 .main {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-row-gap: 20px;
+  grid-column-gap: 20px;
   height: 100%;
   padding: 30px 50px;
   background-color: var(--accent2-color);
-
-  @media (max-width: map-get($grid-breakpoints, 'sm')) {
-    padding: 15px;
-  }
-
-  & > * {
-    width: 32%;
-    height: 100px;
-    margin-bottom: 10px;
-
-    @media (max-width: map-get($grid-breakpoints, 'sm')) {
-      width: auto;
-      height: auto;
-      margin-bottom: 15px;
-    }
-  }
-
-  :nth-child(1) {
-    width: 100%;
-  }
 }

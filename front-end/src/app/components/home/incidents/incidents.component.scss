@@ -1,10 +1,32 @@
 .card {
-  max-height: 400px;
+  height: 100%;
+  box-sizing: border-box;
   overflow-y: auto;
+
+  &__header {
+    display: flex;
+    margin-bottom: 20px;
+  }
+
+  &__notification {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__notification-icon {
+    max-width: 30px;
+    margin-right: 20px;
+  }
+
+  &__body > span {
+    display: flex;
+    margin-bottom: 20px;
+  }
 
   &__item {
     display: flex;
-    padding: 15px 5px;
+    padding: 15px;
 
     &:nth-child(even) {
       background-color: #EDE7F6;
@@ -26,5 +48,15 @@
     height: 18px;
     min-width: auto;
     margin-right: 10px;
+  }
+}
+
+.blink {
+  animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }

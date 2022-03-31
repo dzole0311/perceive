@@ -2,8 +2,6 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core
 import * as Highcharts from "highcharts";
 import {animate, style, transition, trigger} from "@angular/animations";
 
-let chart: any;
-
 @Component({
   selector: 'app-cpu-load',
   templateUrl: './cpu-load.component.html',
@@ -15,7 +13,8 @@ let chart: any;
   ]
 })
 export class CpuLoadComponent implements OnInit, OnChanges {
-  @Input() timeSeries: any;
+  @Input() timeSeries: number[][];
+  private chart: Highcharts.Chart;
 
   constructor() { }
 
@@ -28,7 +27,7 @@ export class CpuLoadComponent implements OnInit, OnChanges {
   }
 
   createCpuLoadChart() {
-    chart = Highcharts.chart('chart-pie', {
+    this.chart = Highcharts.chart('chart-pie', {
       chart: {
         type: 'pie',
         renderTo: 'chart-pie'
@@ -50,7 +49,7 @@ export class CpuLoadComponent implements OnInit, OnChanges {
         style: {
           fontSize: '60px',
           fontFamily: 'Roboto',
-          transform: 'translateY(15px)'
+          transform: 'translateY(35px)'
         }
       },
       colors: ['#5C6BC0', '#D1C4E9'],
@@ -80,9 +79,12 @@ export class CpuLoadComponent implements OnInit, OnChanges {
     } as any);
   }
 
-  updateCpuLoadChart(timeSeries: any) {
-    if (!chart) return;
-    chart.series[1].setData([timeSeries[timeSeries.length - 1][1], 100 - timeSeries[timeSeries.length - 1][1]]);
-    chart.setSubtitle({text: Math.round(timeSeries[timeSeries.length - 1][1]).toString() + '%'});
+  updateCpuLoadChart(timeSeries: number[][]) {
+    if (!this.chart || !timeSeries) return;
+    // Update the CPU load pie chart by taking the most recent item from the timeseries array
+    let timeseriesMostRecentItem = timeSeries[timeSeries.length - 1];
+    this.chart.series[1].setData([timeseriesMostRecentItem[1], 100 - timeseriesMostRecentItem[1]]);
+    // Update the subtitle centered in the pie-chart
+    this.chart.setSubtitle({text: Math.round(timeseriesMostRecentItem[1]).toString() + '%'});
   }
 }

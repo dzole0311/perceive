@@ -1,26 +1,4 @@
-<div class="card summary" [@cardAnimate]>
-  <h3 class="card__title">System details</h3>
-  <div class="card__content">
-    <div class="card__item summary__item">
-      <span class="summary__item-value">{{ os }}</span>
-      <div class="summary__item-description">
-        <img class="card__icon card__icon--sm" src="./assets/images/computer-solid.svg" alt="Operating system"/>
-        <span>Platform</span>
-      </div>
-    </div>
-    <div class="card__item summary__item">
-      <span class="summary__item-value">{{ cpuCount }}</span>
-      <div class="summary__item-description">
-        <img class="card__icon card__icon--sm" src="./assets/images/microchip-solid.svg" alt="CPU count" />
-        <span>CPU count</span>
-      </div>
-    </div>
-    <div class="card__item summary__item">
-      <span class="summary__item-value">{{ formatBytes(upTime) }}</span>
-      <div class="summary__item-description">
-        <img class="card__icon card__icon--sm" src="./assets/images/heart-pulse-solid.svg" alt="Uptime" />
-        <span>System uptime</span>
-      </div>
-    </div>
-  </div>
-</div>
+<app-cpu-count [cpuCount]="cpuCount"></app-cpu-count>
+<app-uptime [upTime]="upTime"></app-uptime>
+<app-platform [platform]="os"></app-platform>
+<app-free-memory [memory]="memory"></app-free-memory>

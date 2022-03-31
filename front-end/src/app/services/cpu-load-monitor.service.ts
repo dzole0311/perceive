@@ -19,7 +19,6 @@ export class CpuLoadMonitorService {
   public historicalCpuLoadOverview: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([]);
   private cpuHighLoadStartTime = 0;
   private cpuRecoveryStartTime = 0;
-  private intervals: number[][] = [];
 
   constructor(private websocketApiService: WebsocketApiService) {
     this.websocketApiService.cpuPayload.subscribe(msg => {
@@ -27,7 +26,8 @@ export class CpuLoadMonitorService {
     });
   }
 
-  monitorCurrentCpuLoad(timeseries: any): void {
+  monitorCurrentCpuLoad(timeseries: number[][]): void {
+    if (!timeseries) return;
     let currentCpuLoad = timeseries[timeseries.length - 1][1];
     let timestamp = timeseries[timeseries.length - 1][0];
 
@@ -95,9 +95,15 @@ export class CpuLoadMonitorService {
     return (timestamp - this.cpuRecoveryStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
   }
 
-  generateHistoricalHighCpuOverview(timeseries: any) {
+  /**
+   * Generates intervals [from, to] from all of the high cpu load occurrences
+   * in the past 10 minutes. The result is used by the cpu-load component to
+   * give the user an overview of the past high CPU load occurrences.
+   *
+   * @param timeseries
+   */
+  generateHistoricalHighCpuOverview(timeseries: number[][]) {
     this.historicalCpuLoadOverview.next([]);
-    this.intervals = [];
     let interval: number[] = [];
     let startTime = 0;
     let isPreviousLoadBigger = false;
@@ -115,6 +121,7 @@ export class CpuLoadMonitorService {
           let historicalCpuLoadOverviewCurrentValue = this.historicalCpuLoadOverview.value;
           let historicalCpuLoadOverviewUpdatedValue = [...historicalCpuLoadOverviewCurrentValue, interval];
           this.historicalCpuLoadOverview.next(historicalCpuLoadOverviewUpdatedValue);
+          // Resets
           startTime = 0;
           interval = [];
           isPreviousLoadBigger = false;

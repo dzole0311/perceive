@@ -1,8 +1,10 @@
-export interface Message {
-    timeSeries: (number | null)[][],
+export interface CpuLoadPayload {
+    timeSeries: number[][],
     systemOverview: {
         platform: any,
         uptime: number,
-        cpuCount: number
+        cpuCount: number,
+        totalMemory: number,
+        freeMemory: number
     }
 }

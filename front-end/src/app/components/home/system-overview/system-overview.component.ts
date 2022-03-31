@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {CpuLoadPayload} from "../../../interfaces/interfaces";
 
 
 @Component({
@@ -13,12 +14,13 @@ import {animate, style, transition, trigger} from "@angular/animations";
   ]
 })
 export class SystemOverviewComponent implements OnInit, OnChanges {
-  @Input() systemOverviewData: any;
-  public os = '';
-  public upTime = 0;
-  public cpuCount = 0;
-  public totalMem = 0;
-  public freeMem = 0;
+  @Input() systemOverviewData: CpuLoadPayload['systemOverview'];
+  public os: string = '';
+  public upTime: string = '';
+  public cpuCount: number = 0;
+  public totalMemory: number = 0;
+  public freeMemory: number = 0;
+  public memory: string = '';
 
   constructor() { }
 
@@ -31,11 +33,13 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
   }
 
   updateSystemOverviewDetails() {
+    if (!this.systemOverviewData) return;
     this.os = this.systemOverviewData.platform;
-    this.upTime = this.systemOverviewData.uptime;
+    this.upTime = this.systemOverviewData.uptime.toString();
     this.cpuCount = this.systemOverviewData.cpuCount;
-    this.totalMem = this.formatBytes(this.systemOverviewData.totalMem, 2);
-    this.freeMem = this.formatBytes(this.systemOverviewData.freeMem, 2);
+    this.freeMemory = this.systemOverviewData.freeMemory;
+    this.totalMemory = this.systemOverviewData.totalMemory;
+    this.memory = `${this.formatBytes(this.freeMemory, 1)} / ${this.formatBytes(this.totalMemory, 1)}`;
   }
 
   formatBytes(bytes: number, decimals = 2) {

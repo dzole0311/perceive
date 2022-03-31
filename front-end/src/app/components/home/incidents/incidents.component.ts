@@ -4,7 +4,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import {CpuLoadMonitorService} from "../../../services/cpu-load-monitor.service";
 
 enum ToastMessages {
-  HIGH_LOAD = 'Your CPU has been under high load.',
+  HIGH_LOAD = 'Your CPU is experiencing a high load',
   RECOVERED = 'Your CPU has recovered from a high load'
 }
 
@@ -39,12 +39,16 @@ export class IncidentsComponent implements OnInit {
       if (state === CpuLoadStates.HIGH_LOAD) {
         this.toast.info(ToastMessages.HIGH_LOAD);
       } else if (state === CpuLoadStates.RECOVERED) {
-        this.toast.info(ToastMessages.RECOVERED);
+        this.toast.success(ToastMessages.RECOVERED);
       }
     });
 
     this.cpuLoadMonitorService.historicalCpuLoadOverview.subscribe((overview: number[][]) => {
       this.historicalCpuLoadOverview = overview;
     });
+  }
+
+  isCpuUnderHighLoad() {
+    return this.cpuLoadState === CpuLoadStates.HIGH_LOAD;
   }
 }

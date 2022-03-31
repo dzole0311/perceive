@@ -9,13 +9,13 @@
   --accent-color: #FFC107;
   --accent2-color: #EDEDED;
   --dark-gray: #212121;
-  --error-color: #B00020;
+  --danger-color: #B00020;
+  --success-color: #43A047;
   --scrollbarBG: #CFD8DC;
   --scrollbarThumbColor: #90A4AE;
 }
 
 html, body {
-  height: 100%;
   margin: 0;
 }
 
@@ -52,24 +52,4 @@ p, h1, h2, h3, h4, h5, span, a {
       height: 25px;
     }
   }
-}
-
-// Scrollbar stylings
-*::-webkit-scrollbar {
-  width: 12px;
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbarThumbColor) var(--scrollbarBG);
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--scrollbarBG);
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbarThumbColor) ;
-  border-radius: 3px;
-  border: 2px solid var(--scrollbarBG);
 }

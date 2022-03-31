@@ -10,13 +10,18 @@ import { SystemOverviewComponent } from './components/home/system-overview/syste
 import { AboutComponent } from './components/about/about.component';
 import { HomeComponent } from './components/home/home.component';
 import { IncidentsComponent } from './components/home/incidents/incidents.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { HeaderComponent } from './components/header/header.component';
 import { ChartModule } from 'angular-highcharts';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ThresholdsComponent } from './components/home/chart/thresholds/thresholds.component';
 import { ThresholdStepperComponent } from './components/home/chart/thresholds/threshold-stepper/threshold-stepper.component';
+import { PlatformComponent } from './components/home/system-overview/platform/platform.component';
+import { CpuCountComponent } from './components/home/system-overview/cpu-count/cpu-count.component';
+import { UptimeComponent } from './components/home/system-overview/uptime/uptime.component';
+import { FreeMemoryComponent } from './components/home/system-overview/free-memory/free-memory.component';
+import { CardMediaComponent } from './components/home/system-overview/card-media/card-media.component';
 
 @NgModule({
   declarations: [
@@ -27,9 +32,14 @@ import { ThresholdStepperComponent } from './components/home/chart/thresholds/th
     AboutComponent,
     HomeComponent,
     IncidentsComponent,
-    SidebarComponent,
+    HeaderComponent,
     ThresholdsComponent,
-    ThresholdStepperComponent
+    ThresholdStepperComponent,
+    PlatformComponent,
+    CpuCountComponent,
+    UptimeComponent,
+    FreeMemoryComponent,
+    CardMediaComponent
   ],
   imports: [
     ChartModule,
@@ -41,6 +51,10 @@ import { ThresholdStepperComponent } from './components/home/chart/thresholds/th
     ToastrModule.forRoot({
       preventDuplicates: false,
       timeOut: 3000,
+      iconClasses: {
+        success: 'toast--success',
+        info: 'toast--info'
+      },
       positionClass: 'toast-bottom-right'
     })
   ],

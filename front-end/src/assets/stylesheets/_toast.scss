@@ -1,31 +1,18 @@
-// Few overrides
-
-.toast-container {
-  background: none;
-  color: var(--main-color);
-  box-shadow: none !important;
+.toast--success,
+.toast--info {
+  display: flex;
+  padding: 40px 35px !important;
+  width: 400px !important;
+  color: var(--accent2-color);
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  text-align: center;
 }
 
-.toast-container .toast {
-  color: var(--main-color);
-  box-shadow: none !important;
-  background-color: #fff !important;
+.toast--info {
+  background-color: var(--danger-color);
 }
 
-.toast-success,
-.toast-error {
-  padding: 40px 85px !important;
-  font-family: Roboto, serif;
-  font-weight: 400;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2) !important;
-}
-
-.toast-success {
-  color: var(--dark-gray) !important;
-  background-color: #ffffff;
-}
-
-.toast-error {
-  color: #ffffff !important;
-  background-color: var(--error-color);
+.toast--success {
+  background-color: var(--success-color);
 }
