@@ -85,5 +85,4 @@ export class CpuLoadComponent implements OnInit, OnChanges {
     chart.series[1].setData([timeSeries[timeSeries.length - 1][1], 100 - timeSeries[timeSeries.length - 1][1]]);
     chart.setSubtitle({text: Math.round(timeSeries[timeSeries.length - 1][1]).toString() + '%'});
   }
-
 }

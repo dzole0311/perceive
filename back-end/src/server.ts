@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as http from 'http';
 import * as WebSocket from 'ws';
 import * as os from 'os';
+import {INTERVAL} from "./constants";
 
 const app = express();
 const server = http.createServer(app);
@@ -21,7 +22,7 @@ interface Message {
 // Utility functions
 
 function generateEmptyData() {
-    let interval = 1000, // 10 seconds,
+    let interval = INTERVAL, // 10 seconds,
         numberOfPoints = 600,
         now = (new Date()).getTime(),
         min = now - interval * numberOfPoints,
@@ -61,7 +62,7 @@ const interval = setInterval(function ping() {
     ws.clients.forEach(function each(ws) {
         ws.send(generatePayload());
     });
-}, 1000);
+}, INTERVAL);
 
 //start our server
 server.listen(3000);

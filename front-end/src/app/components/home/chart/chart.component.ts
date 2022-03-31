@@ -1,5 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
+import {CpuLoadMonitorService} from "../../../services/cpu-load-monitor.service";
+import {CPU_HIGH_LOAD_THRESHOLD} from "../../../constants/constants";
 
 @Component({
   selector: 'app-chart',
@@ -9,12 +11,17 @@ import * as Highcharts from 'highcharts';
 export class ChartComponent implements OnInit, OnChanges {
   @Input() timeSeriesData: any;
   private chart: any;
+  private cpuLoadThreshold: number = CPU_HIGH_LOAD_THRESHOLD;
 
-  constructor() {
+  constructor(private cpuMonitoringService: CpuLoadMonitorService) {
   }
 
   ngOnInit(): void {
     this.createChartLine();
+
+    this.cpuMonitoringService.cpuHighLoadThreshold.subscribe(threshold => {
+      this.cpuLoadThreshold = threshold;
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -54,7 +61,7 @@ export class ChartComponent implements OnInit, OnChanges {
         plotLines: [{
           color: '#FF0000',
           width: 1,
-          value: 20
+          value: this.cpuLoadThreshold
         }]
       },
       xAxis: {
@@ -111,5 +118,12 @@ export class ChartComponent implements OnInit, OnChanges {
   updateChartLine() {
     if (!this.chart) return;
     this.chart.series[0].setData(this.timeSeriesData);
+    this.chart.yAxis[0].update({
+      plotLines: [{
+        color: '#FF0000',
+        width: 1,
+        value: this.cpuLoadThreshold
+      }]
+    });
   }
 }
