@@ -15,16 +15,16 @@ let chart: any;
   ]
 })
 export class CpuLoadComponent implements OnInit, OnChanges {
-  @Input() timeSeriesData: any;
+  @Input() timeSeries: any;
 
   constructor() { }
 
   ngOnInit() {
-    this.createCpuLoadChart(this.timeSeriesData);
+    this.createCpuLoadChart(this.timeSeries);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.updateCpuLoadChart(this.timeSeriesData);
+    this.updateCpuLoadChart(this.timeSeries);
   }
 
   createCpuLoadChart(timeseries: any) {
@@ -75,10 +75,10 @@ export class CpuLoadComponent implements OnInit, OnChanges {
     } as any);
   }
 
-  updateCpuLoadChart(timeSeriesData: any) {
+  updateCpuLoadChart(timeSeries: any) {
     if (!chart) return;
-    chart.series[1].setData([timeSeriesData.value, 100 - timeSeriesData.value]);
-    chart.setSubtitle({text: Math.round(timeSeriesData.value).toString() + '%'});
+    chart.series[1].setData([timeSeries[timeSeries.length - 1][1], 100 - timeSeries[timeSeries.length - 1][1]]);
+    chart.setSubtitle({text: Math.round(timeSeries[timeSeries.length - 1][1]).toString() + '%'});
   }
 
 }

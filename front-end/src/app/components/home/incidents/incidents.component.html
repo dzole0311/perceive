@@ -1,42 +1,8 @@
 <div class="card incidents" [@cardAnimate]>
-  <h3 class="card__title">Total Incidents: {{ historicalCpuIncidents.length }}</h3>
+  <h3 class="card__title">Total Incidents: {{ historicalCpuLoadOverview?.length }}</h3>
   <!-- Blinking icon if there is current ongoing incident -->
-  <!--  <div class="incidents__overview">-->
-  <!--    <div class="incidents__overview-row" *ngFor="let item of historicalCpuIncidents">-->
-  <!--      {{item[0] | date:'HH:mm:ss' }} - {{item[1] | date:'HH:mm:ss'}}-->
-  <!--    </div>-->
-
-  <!--  </div>-->
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
-    <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
-  </div>
-  <div class="card__item">
-    <span>21:26:44 - 21:28:39</span>
+  <div class="card__item" *ngFor="let item of historicalCpuLoadOverview">
+    <span>{{item[0] | date:'HH:mm:ss' }} - {{item[1] | date:'HH:mm:ss'}}</span>
     <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
   </div>
 </div>

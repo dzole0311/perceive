@@ -13,14 +13,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private websocketApi: WebsocketApiService) { }
 
   ngOnInit(): void {
-    this.websocketApi.metricsPayload.subscribe((msg) => {
+    this.websocketApi.cpuPayload.subscribe((msg) => {
       this.timeSeries = msg.timeSeries;
       this.systemOverview = msg.systemOverview;
     });
   }
 
   ngOnDestroy(): void {
-    this.websocketApi.metricsPayload.unsubscribe();
+    this.websocketApi.cpuPayload.unsubscribe();
   }
-
 }

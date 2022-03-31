@@ -36,7 +36,6 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
     this.cpuCount = this.systemOverviewData.cpuCount;
     this.totalMem = this.formatBytes(this.systemOverviewData.totalMem, 2);
     this.freeMem = this.formatBytes(this.systemOverviewData.freeMem, 2);
-    console.log(this.systemOverviewData);
   }
 
   formatBytes(bytes: number, decimals = 2) {

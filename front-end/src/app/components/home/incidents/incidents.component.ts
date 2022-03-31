@@ -1,11 +1,17 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { WebsocketApiService } from "../../../services/websocket-api.service";
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { animate, style, transition, trigger } from "@angular/animations";
+import {CpuLoadMonitorService} from "../../../services/cpu-load-monitor.service";
 
 enum ToastMessages {
-  CpuViolationDetected = 'Your CPU has been under high load.',
-  CpuViolationRecovery = 'Your CPU has recovered from a high load'
+  HIGH_LOAD = 'Your CPU has been under high load.',
+  RECOVERED = 'Your CPU has recovered from a high load'
+}
+
+enum CpuLoadStates {
+  DEFAULT,
+  RECOVERED,
+  HIGH_LOAD,
 }
 
 @Component({
@@ -18,64 +24,29 @@ enum ToastMessages {
     ])
   ]
 })
-export class IncidentsComponent implements OnChanges {
-  @Input() timeSeriesData: any;
-  public currentlyOngoingIncident = false;
-  public mostRecentCpuViolationStartTime = 0;
-  public historicalCpuIncidents: [number[]] = [[]];
-  private incidentLoadThreshold = 20;
-  private incidentDurationThreshold = 10;
-  private isCpuLoadThresholdReached = false;
-  private isCpuDurationThresholdReached = false;
+export class IncidentsComponent implements OnInit {
+  @Input() timeSeries: any;
+  public cpuLoadState: CpuLoadStates;
+  public historicalCpuLoadOverview: number[][];
 
-  constructor(private websocketApiService: WebsocketApiService,
+  constructor(private cpuLoadMonitorService: CpuLoadMonitorService,
               private toast: ToastrService) { }
 
-  ngOnChanges(): void {
-    this.updateTimeSeriesData(this.timeSeriesData);
+  ngOnInit(): void {
+    this.cpuLoadMonitorService.cpuLoadState.subscribe((state: CpuLoadStates) => {
+      this.cpuLoadState = state;
+
+      if (state === CpuLoadStates.HIGH_LOAD) {
+        this.toast.info(ToastMessages.HIGH_LOAD);
+      } else if (state === CpuLoadStates.RECOVERED) {
+        this.toast.info(ToastMessages.RECOVERED);
+      }
+    });
+
+    this.cpuLoadMonitorService.historicalCpuLoadOverview.subscribe((overview: number[][]) => {
+      this.historicalCpuLoadOverview = overview;
+    });
   }
 
-  updateTimeSeriesData(timeseries: any): void {
-    /**
-     * If the CPU average load reaches or surpasses the threshold for the
-     * first time, we want to save the timestamp of this message.
-     */
-    if (this.cpuLoadThresholdReached(timeseries.value) && !this.isCpuLoadThresholdReached) {
-      this.mostRecentCpuViolationStartTime = timeseries.timestamp ? timeseries.timestamp : 0;
-      this.isCpuLoadThresholdReached = true;
-    }
 
-    /**
-     * Notify the user of a CPU load violation
-     */
-    if (this.isCpuLoadThresholdReached && !this.isCpuDurationThresholdReached && this.cpuLoadDurationThresholdReached(timeseries.timestamp)) {
-      this.toast.error(ToastMessages.CpuViolationDetected);
-      this.isCpuDurationThresholdReached = true;
-      this.currentlyOngoingIncident = true;
-    }
-
-    /**
-     * Notify the user of a recovery of the CPU
-     */
-    if (!this.cpuLoadThresholdReached(timeseries.value) && this.currentlyOngoingIncident) {
-      this.currentlyOngoingIncident = false;
-      this.isCpuDurationThresholdReached = false;
-      this.isCpuLoadThresholdReached = false;
-      this.toast.success(ToastMessages.CpuViolationRecovery);
-      this.updateHistoricalOverview(timeseries.timestamp);
-    }
-  }
-
-  cpuLoadThresholdReached(cpuLoad: number) {
-    return cpuLoad >= this.incidentLoadThreshold;
-  }
-
-  cpuLoadDurationThresholdReached(timestamp: number) {
-    if (!timestamp) return;
-    return (timestamp - this.mostRecentCpuViolationStartTime) / 1000 > this.incidentDurationThreshold;
-  }
-
-  updateHistoricalOverview(timestamp: number) {
-    this.historicalCpuIncidents.push([this.mostRecentCpuViolationStartTime, timestamp]);
-  }
 }

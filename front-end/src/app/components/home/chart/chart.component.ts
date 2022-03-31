@@ -1,16 +1,11 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
 
-interface Message {
-  timeSeries: {
-    timestamp: number,
-    value: number
-  },
-  systemOverview: {
-    platform: any,
-    uptime: number,
-    cpuCount: number
-  }
+interface PlotBand {
+  from: number,
+  to: number,
+  id: number | string,
+  color: string
 }
 
 @Component({
@@ -21,6 +16,9 @@ interface Message {
 export class ChartComponent implements OnInit, OnChanges {
   @Input() timeSeriesData: any;
   private chart: any;
+  private plotBands: PlotBand[];
+  private previousValueWasBigger = false;
+  private j = 0;
 
   constructor() {
   }
@@ -30,38 +28,10 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes.timeSeriesData.currentValue, 'ovde');
     this.updateChartLine();
   }
 
-  getEmptyData() {
-    let interval = 10000, // 10 second,
-      numberOfPoints = 50,
-      now = (new Date()).getTime(),
-      min = now - interval * numberOfPoints,
-      points = [];
-
-    while (min <= now) {
-      points.push([min, null]); // set null points
-      min += interval;
-    }
-    return points;
-  }
-
   private createChartLine(): void {
-    let data: any[] = [];
-    //
-    // for (let i = 0; i <= 999; i++) {
-    //   data.push({
-    //     x: new Date().getTime() - i * 600,
-    //     y: null
-    //   });
-    // }
-
-    // data.reverse();
-
-    data = this.getEmptyData();
-
     this.chart = Highcharts.chart('chart-line', {
       chart: {
         type: 'area',
@@ -90,17 +60,25 @@ export class ChartComponent implements OnInit, OnChanges {
         }]
       },
       xAxis: {
-        type: 'datetime'
+        type: 'datetime',
+        crosshair: {
+          width: 1,
+          color: 'red',
+          zIndex: 3,
+        }
       },
       tooltip: {
         headerFormat: `<div>Date: {point.key}</div>`,
         pointFormat: `<div>{series.name}: {point.y}</div>`,
+        valueDecimals: 2,
         shared: true,
         useHTML: true,
       },
       plotOptions: {
         series: {
-          animation: true,
+          marker: {
+            enabled: false
+          },
           states: {
             hover: {
               enabled: false,
@@ -111,30 +89,13 @@ export class ChartComponent implements OnInit, OnChanges {
           },
         },
       },
-      responsive: {
-        rules: [
-          {
-            chartOptions: {
-              // Hide various elements on mobile
-              title: { text: '' },
-              tooltip: {
-                enabled: false,
-              },
-              xAxis: {
-                crosshair: { width: 0 },
-              },
-            },
-            condition: { maxWidth: 300 },
-          },
-        ],
-      },
       time: {
         useUTC: false,
       },
       series: [{
         name: "CPU Load",
-        color: '#ffffff',
         breakSize: 2,
+        color: 'rgb(63, 81, 181)',
         fillColor: {
           linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
           stops: [
@@ -142,14 +103,35 @@ export class ChartComponent implements OnInit, OnChanges {
             [1, 'rgb(92, 107, 192, 0.7)']
           ]
         },
-        data: this.getEmptyData()
+        data: this.timeSeriesData
       }],
     } as any);
   }
 
   updateChartLine() {
     if (!this.chart) return;
-    console.log(this.timeSeriesData.timestamp, 'ovde 2');
-    this.chart.series[0].addPoint([this.timeSeriesData.timestamp, this.timeSeriesData.value], true, true);
+    // this.generatePlotBands();
+    this.chart.series[0].setData(this.timeSeriesData);
+  }
+
+  generatePlotBands() {
+    let plotBand: PlotBand = {from: 0, to: 0, id: 0, color: '#F0F0C0'};
+
+    for (let i = 0; i < this.timeSeriesData.length - 1; i++) {
+      if (this.timeSeriesData[i][1] >= 15 && !this.previousValueWasBigger) {
+        plotBand.from = this.timeSeriesData[i][0];
+        this.previousValueWasBigger = !this.previousValueWasBigger;
+      } else if (this.timeSeriesData[i][1] < 15 && this.previousValueWasBigger || i === this.timeSeriesData.length - 1) {
+        if (this.timeSeriesData[i][1] >= 15 && this.timeSeriesData.length - 1 === i) {
+          plotBand.to = this.timeSeriesData[i - 1][0];
+        } else {
+          plotBand.to = this.timeSeriesData[i][0];
+        }
+        this.previousValueWasBigger = !this.previousValueWasBigger;
+        plotBand.id = 'plot-band-' + this.j;
+        this.chart.xAxis[0].addPlotBand(plotBand);
+        this.j++;
+      }
+    }
   }
 }
