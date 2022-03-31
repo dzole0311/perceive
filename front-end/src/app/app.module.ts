@@ -15,6 +15,8 @@ import { ChartModule } from 'angular-highcharts';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ThresholdsComponent } from './components/home/chart/thresholds/thresholds.component';
+import { ThresholdStepperComponent } from './components/home/chart/thresholds/threshold-stepper/threshold-stepper.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     AboutComponent,
     HomeComponent,
     IncidentsComponent,
-    SidebarComponent
+    SidebarComponent,
+    ThresholdsComponent,
+    ThresholdStepperComponent
   ],
   imports: [
     ChartModule,

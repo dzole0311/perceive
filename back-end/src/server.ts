@@ -21,8 +21,8 @@ interface Message {
 // Utility functions
 
 function generateEmptyData() {
-    let interval = 10000, // 10 seconds,
-        numberOfPoints = 60,
+    let interval = 1000, // 10 seconds,
+        numberOfPoints = 600,
         now = (new Date()).getTime(),
         min = now - interval * numberOfPoints,
         points = [];
@@ -37,7 +37,7 @@ function generateEmptyData() {
 
 
 function generatePayload() {
-    msg.timeSeries = updateTimeSeries(timeSeries);
+    msg.timeSeries = updateTimeSeries();
     msg.systemOverview.platform = os.platform();
     msg.systemOverview.uptime = os.uptime();
     msg.systemOverview.cpuCount = os.cpus().length;
@@ -45,7 +45,7 @@ function generatePayload() {
     return JSON.stringify(msg);
 }
 
-function updateTimeSeries(timeSeries: (number | null)[][]) {
+function updateTimeSeries() {
     timeSeries.push([new Date().getTime(), (os.loadavg()[0] / os.cpus().length) * 100]);
     timeSeries.shift();
     return timeSeries;
@@ -61,7 +61,7 @@ const interval = setInterval(function ping() {
     ws.clients.forEach(function each(ws) {
         ws.send(generatePayload());
     });
-}, 10000);
+}, 1000);
 
 //start our server
 server.listen(3000);
@@ -71,16 +71,10 @@ let timeSeries = generateEmptyData();
 
 // build up an initial payload
 let msg: Message = {
-    timeSeries: updateTimeSeries(timeSeries),
+    timeSeries: updateTimeSeries(),
     systemOverview: {
         platform: os.platform(),
         uptime: os.uptime(),
         cpuCount: os.cpus().length
     }
 }
-
-// then, set interval on every 10 seconds to:
-
-// update the reference array by adding a x, y point at the end and shifting it's first value
-
-// send the updated array to the front-end

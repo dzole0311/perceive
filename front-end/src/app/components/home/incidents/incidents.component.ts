@@ -47,6 +47,4 @@ export class IncidentsComponent implements OnInit {
       this.historicalCpuLoadOverview = overview;
     });
   }
-
-
 }

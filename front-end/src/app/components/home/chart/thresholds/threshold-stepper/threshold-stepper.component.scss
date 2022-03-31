@@ -1,0 +1,30 @@
+.threshold {
+  padding: 0 20px;
+
+  &__label {
+    margin-right: 10px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  &__value {
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  &__button {
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid #bebebe;
+    border-radius: 1px;
+    padding: 0 12px;
+    color: var(--main-color);
+    background-color: transparent;
+    font-family: "Roboto", serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 30px;
+    cursor: pointer;
+  }
+}

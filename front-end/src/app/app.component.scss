@@ -26,9 +26,16 @@ p, h1, h2, h3, h4, h5, span, a {
 }
 
 .card {
+  position: relative;
   padding: 20px;
   background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+
+  &__title {
+    display: flex;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
 
   &__item {
     display: flex;
@@ -44,11 +51,6 @@ p, h1, h2, h3, h4, h5, span, a {
       min-width: auto;
       height: 25px;
     }
-  }
-
-  &__title {
-    display: flex;
-    margin-bottom: 20px;
   }
 }
 

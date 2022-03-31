@@ -20,14 +20,14 @@ export class CpuLoadComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    this.createCpuLoadChart(this.timeSeries);
+    this.createCpuLoadChart();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.updateCpuLoadChart(this.timeSeries);
   }
 
-  createCpuLoadChart(timeseries: any) {
+  createCpuLoadChart() {
     chart = Highcharts.chart('chart-pie', {
       chart: {
         type: 'pie',
@@ -38,6 +38,11 @@ export class CpuLoadComponent implements OnInit, OnChanges {
       },
       title: {
         text: 'CPU Load average',
+        align: 'left',
+        margin: 50,
+        style: {
+          fontWeight: 'bold'
+        }
       },
       subtitle: {
         text: '',

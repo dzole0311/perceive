@@ -10,9 +10,15 @@ export class WebsocketApiService {
   private subject = webSocket("ws://localhost:3000");
 
   constructor() {
+    this.connect();
+  }
+
+  connect() {
     this.subject.subscribe(
       msg => this.cpuPayload.next(msg),
-      err => console.log('error'),
+      err => setTimeout(() => {
+        this.connect()
+      }, 1000),
       () => console.log('complete')
     );
   }

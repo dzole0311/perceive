@@ -1,13 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
 
-interface PlotBand {
-  from: number,
-  to: number,
-  id: number | string,
-  color: string
-}
-
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
@@ -16,9 +9,6 @@ interface PlotBand {
 export class ChartComponent implements OnInit, OnChanges {
   @Input() timeSeriesData: any;
   private chart: any;
-  private plotBands: PlotBand[];
-  private previousValueWasBigger = false;
-  private j = 0;
 
   constructor() {
   }
@@ -39,6 +29,11 @@ export class ChartComponent implements OnInit, OnChanges {
       },
       title: {
         text: 'CPU Load History',
+        align: 'left',
+        margin: 50,
+        style: {
+          fontWeight: 'bold'
+        }
       },
       credits: {
         enabled: false,
@@ -48,6 +43,9 @@ export class ChartComponent implements OnInit, OnChanges {
         align: "right",
       },
       yAxis: {
+        title: {
+          enabled: false
+        },
         min: 0,
         max: 100,
         labels: {
@@ -55,15 +53,17 @@ export class ChartComponent implements OnInit, OnChanges {
         },
         plotLines: [{
           color: '#FF0000',
-          width: 2,
+          width: 1,
           value: 20
         }]
       },
       xAxis: {
         type: 'datetime',
+        minPadding: 0,
+        maxPadding: 0,
         crosshair: {
           width: 1,
-          color: 'red',
+          color: '#EDE7F6',
           zIndex: 3,
         }
       },
@@ -95,7 +95,7 @@ export class ChartComponent implements OnInit, OnChanges {
       series: [{
         name: "CPU Load",
         breakSize: 2,
-        color: 'rgb(63, 81, 181)',
+        color: 'transparent',
         fillColor: {
           linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
           stops: [
@@ -110,28 +110,6 @@ export class ChartComponent implements OnInit, OnChanges {
 
   updateChartLine() {
     if (!this.chart) return;
-    // this.generatePlotBands();
     this.chart.series[0].setData(this.timeSeriesData);
-  }
-
-  generatePlotBands() {
-    let plotBand: PlotBand = {from: 0, to: 0, id: 0, color: '#F0F0C0'};
-
-    for (let i = 0; i < this.timeSeriesData.length - 1; i++) {
-      if (this.timeSeriesData[i][1] >= 15 && !this.previousValueWasBigger) {
-        plotBand.from = this.timeSeriesData[i][0];
-        this.previousValueWasBigger = !this.previousValueWasBigger;
-      } else if (this.timeSeriesData[i][1] < 15 && this.previousValueWasBigger || i === this.timeSeriesData.length - 1) {
-        if (this.timeSeriesData[i][1] >= 15 && this.timeSeriesData.length - 1 === i) {
-          plotBand.to = this.timeSeriesData[i - 1][0];
-        } else {
-          plotBand.to = this.timeSeriesData[i][0];
-        }
-        this.previousValueWasBigger = !this.previousValueWasBigger;
-        plotBand.id = 'plot-band-' + this.j;
-        this.chart.xAxis[0].addPlotBand(plotBand);
-        this.j++;
-      }
-    }
   }
 }

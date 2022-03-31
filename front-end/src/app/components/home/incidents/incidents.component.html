@@ -1,5 +1,5 @@
 <div class="card incidents" [@cardAnimate]>
-  <h3 class="card__title">Total Incidents: {{ historicalCpuLoadOverview?.length }}</h3>
+  <h3 class="card__title">Total recoveries: {{ historicalCpuLoadOverview?.length }}</h3>
   <!-- Blinking icon if there is current ongoing incident -->
   <div class="card__item" *ngFor="let item of historicalCpuLoadOverview">
     <span>{{item[0] | date:'HH:mm:ss' }} - {{item[1] | date:'HH:mm:ss'}}</span>
