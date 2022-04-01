@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { animate, style, transition, trigger } from "@angular/animations";
 import {CpuLoadMonitorService} from "../../../services/cpu-load-monitor.service";

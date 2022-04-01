@@ -1,17 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {STEPS} from "../../../../../constants/constants";
-
-interface action {
-  option: '',
-  value: 0
-}
 
 @Component({
   selector: 'app-threshold-stepper',
   templateUrl: './threshold-stepper.component.html',
   styleUrls: ['./threshold-stepper.component.scss']
 })
-export class ThresholdStepperComponent implements OnInit {
+export class ThresholdStepperComponent {
   @Input() value: number;
   @Input() label: string;
   @Input() steps: number = STEPS;
@@ -22,18 +17,15 @@ export class ThresholdStepperComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
   onIncrementButtonClick() {
+    // Only increment if the next value is less than the upper limit
     if (this.value + this.steps > this.upperLimit) return;
-
     this.onThresholdChange.emit({option: this.label, value: this.value + this.steps});
   }
 
   onDecrementButtonClick() {
+    // Only decrement if the next value is bigger than or equal to the lower limit
     if (this.value - this.steps <= this.lowerLimit) return;
-
     this.onThresholdChange.emit({option: this.label, value: this.value - this.steps});
   }
 }

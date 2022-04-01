@@ -64,10 +64,9 @@ export class ChartComponent implements OnInit, OnChanges {
         }
       },
       tooltip: {
-        headerFormat: `<div>Date: {point.key}</div>`,
+        headerFormat: `<div>Time: {point.key}</div>`,
         pointFormat: `<div>{series.name}: {point.y}</div>`,
         valueDecimals: 2,
-        shared: true,
         useHTML: true,
       },
       plotOptions: {

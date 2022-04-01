@@ -35,7 +35,7 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
   updateSystemOverviewDetails() {
     if (!this.systemOverviewData) return;
     this.os = this.systemOverviewData.platform;
-    this.upTime = this.systemOverviewData.uptime.toString();
+    this.upTime = this.formatUptime(this.systemOverviewData.uptime);
     this.cpuCount = this.systemOverviewData.cpuCount;
     this.freeMemory = this.systemOverviewData.freeMemory;
     this.totalMemory = this.systemOverviewData.totalMemory;
@@ -48,5 +48,19 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
     const dm = decimals < 0 ? 0 : decimals;
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+  }
+
+  formatUptime(seconds: number) {
+    let result = '';
+    if (seconds < 60) {
+      result = `${seconds}s`;
+    } else if (seconds >= 60 && seconds < 3600) {
+      let minutes = Math.round(seconds / 60);
+      result = `${minutes}m`;
+    } else if (seconds > 3600) {
+      let hours = Math.round(seconds / 3600 * 10) / 10;
+      result = `${hours}h`;
+    }
+    return result;
   }
 }

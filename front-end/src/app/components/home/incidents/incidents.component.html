@@ -1,12 +1,11 @@
 <div class="card" [@cardAnimate]>
   <div class="card__header">
-      <div class="card__notification" *ngIf="!isCpuUnderHighLoad()">
-        <img class="card__notification-icon" src="./assets/images/circle-check-solid.svg"/>
-        <span>The CPU load is currently stable</span>
-      </div>
-      <div class="card__notification" *ngIf="isCpuUnderHighLoad()">
-        <img class="card__notification-icon blink" src="./assets/images/circle-exclamation-solid.svg" alt="High CPU load detected">
-        <span>High CPU load detected</span>
+      <div class="card__notification">
+        <img class="card__notification-icon"
+             alt="CPU Load notification"
+             [ngClass]="{ 'blink' : isCpuUnderHighLoad()}"
+             [src]="isCpuUnderHighLoad() ? './assets/images/circle-exclamation-solid.svg' : './assets/images/circle-check-solid.svg'"/>
+        <span>{{ isCpuUnderHighLoad() ? 'High CPU load detected' : 'The CPU load is currently stable' }}</span>
       </div>
   </div>
   <div class="card__body">
