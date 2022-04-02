@@ -1,0 +1,26 @@
+.card__media {
+  display: flex;
+  justify-content: space-between;
+  height: calc(100% - 40px);
+
+  &-image, img {
+    display: flex;
+    align-items: flex-end;
+    width: 55px;
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+  }
+
+  &-title {
+    font-size: 38px;
+    text-transform: capitalize;
+  }
+
+  &-description {
+    color: grey;
+  }
+}
