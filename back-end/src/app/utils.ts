@@ -1,14 +1,14 @@
 import * as os from 'os';
-import {INTERVAL, TIME_WINDOW} from './constants';
-import {CpuLoadPayload} from '../../front-end/src/app/interfaces/interfaces';
+import { INTERVAL, TIME_WINDOW } from './constants';
+import { CpuLoadPayload } from '../../../front-end/src/app/interfaces/interfaces';
 
-let payload: CpuLoadPayload;
+let cpuLoadPayload: CpuLoadPayload;
 
 /**
  * Generates the payload used by the front-end components
  */
-export const generatePayload = () => {
-    payload = {
+export const generateCpuPayload = () => {
+    cpuLoadPayload = {
         timeSeries: updateTimeSeriesData(),
         systemOverview: {
             platform: os.platform(),
@@ -18,7 +18,10 @@ export const generatePayload = () => {
             freeMemory: os.freemem()
         }
     }
-    return JSON.stringify(payload);
+
+    console.log(cpuLoadPayload.timeSeries[0][0]);
+
+    return JSON.stringify(cpuLoadPayload);
 }
 
 /**
@@ -27,7 +30,7 @@ export const generatePayload = () => {
  * 10 minutes in time, with the y points being
  * set to null.
  */
-const generateEmptyTimeSeriesData = () => {
+const generateDefaultTimeSeriesData = () => {
     const timeSeries = [];
     for (let i = TIME_WINDOW; i > 0; i--) {
         timeSeries.push([
@@ -42,7 +45,7 @@ const generateEmptyTimeSeriesData = () => {
  * The reference timeseries variable that keeps the up-to-date
  * timeseries data that ends up being sent to the front-end.
  */
-export const timeSeries = generateEmptyTimeSeriesData();
+export const timeSeries = generateDefaultTimeSeriesData();
 
 /**
  * Updates the timeseries data by pushing a new point at the end

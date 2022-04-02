@@ -71,12 +71,13 @@ export class CpuLoadMonitorService {
         }
       }
     } else if (!this.cpuLoadThresholdReached(currentCpuLoad)) {
-      // If the CPU is currently experiencing a high average load,
-      // while the CPU load dropped to a value below the load threshold,
-      // then it might be that the CPU load has started to stabilize
+      // If the CPU load is below the threshold, 2 things are probably happening:
+      // 1. The CPU has been stable for a while - handled
+      // 2. The CPU was under high load, but started to stabilize -> this is the first occurrence - handled
+      // 3. The threshold has been increased by the user -> the under high load check below should be invalidated
       if (this.isCpuUnderHighLoad()) {
 
-        // Keep the start time of the recovery, as it might be
+        // Keep the start time of the recovery, because we need to count
         if (!this.cpuRecoveryStartTime) {
           this.cpuRecoveryStartTime = timestamp;
         }

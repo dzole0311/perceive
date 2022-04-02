@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {CpuLoadPayload} from "../../../interfaces/interfaces";
+import {formatBytes, formatTime} from '../../../shared/utils';
 
 
 @Component({
@@ -35,34 +36,10 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
   updateSystemOverviewDetails() {
     if (!this.systemOverviewData) return;
     this.os = this.systemOverviewData.platform;
-    this.upTime = this.formatUptime(this.systemOverviewData.uptime);
+    this.upTime = formatTime(this.systemOverviewData.uptime);
     this.cpuCount = this.systemOverviewData.cpuCount;
     this.freeMemory = this.systemOverviewData.freeMemory;
     this.totalMemory = this.systemOverviewData.totalMemory;
-    this.memory = `${this.formatBytes(this.freeMemory, 1)} / ${this.formatBytes(this.totalMemory, 1)}`;
-  }
-
-  formatBytes(bytes: number, decimals = 2) {
-    if (bytes === 0) return 0;
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-  }
-
-  formatUptime(seconds: number) {
-    let result = '';
-
-    if (seconds < 60) {
-      result = `${seconds}s`;
-    } else if (seconds >= 60 && seconds < 3600) {
-      let minutes = Math.round(seconds / 60);
-      result = `${minutes}m`;
-    } else if (seconds > 3600) {
-      let hours = Math.round(seconds / 3600 * 10) / 10;
-      result = `${hours}h`;
-    }
-
-    return result;
+    this.memory = `${formatBytes(this.freeMemory, 1)} / ${formatBytes(this.totalMemory, 1)}`;
   }
 }

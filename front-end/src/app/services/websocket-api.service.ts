@@ -3,12 +3,14 @@ import {webSocket} from "rxjs/webSocket";
 import {BehaviorSubject} from "rxjs";
 
 interface CpuLoadPayload {
-    timeSeries: number[][],
-    systemOverview: {
-        platform: any,
-        uptime: number,
-        cpuCount: number
-    }
+  timeSeries: number[][],
+  systemOverview: {
+    platform: string,
+    uptime: number,
+    cpuCount: number,
+    freeMemory: number,
+    totalMemory: number
+  }
 }
 
 @Injectable({
@@ -46,9 +48,11 @@ export class WebsocketApiService {
     return {
       timeSeries: [[0, 0]],
       systemOverview: {
-        platform: '',
+        platform: 'Loading...',
         uptime: 0,
-        cpuCount: 0
+        cpuCount: 0,
+        freeMemory: 0,
+        totalMemory: 0
       }
     };
   }

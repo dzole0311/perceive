@@ -1,7 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { animate, style, transition, trigger } from "@angular/animations";
-import {CpuLoadMonitorService} from "../../../services/cpu-load-monitor.service";
+import { animate, style, transition, trigger } from '@angular/animations';
+import {CpuLoadMonitorService} from '../../../services/cpu-load-monitor.service';
+import {TIME_WINDOW} from '../../../constants/constants';
+import {formatTime} from "../../../shared/utils";
 
 enum ToastMessages {
   HIGH_LOAD = 'Your CPU is experiencing a high load',
@@ -28,6 +30,7 @@ export class IncidentsComponent implements OnInit {
   @Input() timeSeries: any;
   public cpuLoadState: CpuLoadStates;
   public historicalCpuLoadOverview: number[][];
+  public timeWindow: string = formatTime(TIME_WINDOW);
 
   constructor(private cpuLoadMonitorService: CpuLoadMonitorService,
               private toast: ToastrService) { }
@@ -37,6 +40,8 @@ export class IncidentsComponent implements OnInit {
       this.cpuLoadState = state;
 
       if (state === CpuLoadStates.HIGH_LOAD) {
+        // We trigger a toast message of type 'info', since the
+        // high CPU load alert is simply an information for the user
         this.toast.info(ToastMessages.HIGH_LOAD);
       } else if (state === CpuLoadStates.RECOVERED) {
         this.toast.success(ToastMessages.RECOVERED);
