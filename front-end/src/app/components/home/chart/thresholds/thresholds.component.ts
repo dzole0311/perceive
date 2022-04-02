@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {CPU_HIGH_LOAD_DURATION, CPU_HIGH_LOAD_THRESHOLD} from "../../../../constants/constants";
-import {CpuLoadMonitorService} from "../../../../services/cpu-load-monitor.service";
+import {CPU_HIGH_LOAD_DURATION, CPU_HIGH_LOAD_THRESHOLD} from '../../../../constants/constants';
+import {CpuLoadMonitorService} from '../../../../services/cpu-load-monitor.service';
 
 @Component({
   selector: 'app-thresholds',
@@ -24,9 +24,9 @@ export class ThresholdsComponent implements OnInit {
   }
 
   updateThreshold(event: any) {
-    if (event.option === 'Threshold') {
+    if (event.name === 'Threshold') {
       this.cpuLoadMonitorService.cpuHighLoadThreshold.next(event.value);
-    } else if (event.option === 'Duration') {
+    } else if (event.name === 'Duration') {
       this.cpuLoadMonitorService.cpuHighLoadDurationThreshold.next(event.value);
     }
   }

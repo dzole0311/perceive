@@ -52,6 +52,7 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
 
   formatUptime(seconds: number) {
     let result = '';
+
     if (seconds < 60) {
       result = `${seconds}s`;
     } else if (seconds >= 60 && seconds < 3600) {
@@ -61,6 +62,7 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
       let hours = Math.round(seconds / 3600 * 10) / 10;
       result = `${hours}h`;
     }
+
     return result;
   }
 }

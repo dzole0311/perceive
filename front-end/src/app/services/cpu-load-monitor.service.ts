@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {WebsocketApiService} from "./websocket-api.service";
-import {CPU_HIGH_LOAD_DURATION, CPU_HIGH_LOAD_THRESHOLD} from "../constants/constants";
-import {BehaviorSubject} from "rxjs";
+import {WebsocketApiService} from './websocket-api.service';
+import {CPU_HIGH_LOAD_DURATION, CPU_HIGH_LOAD_THRESHOLD, TIME_WINDOW} from '../constants/constants';
+import {BehaviorSubject} from 'rxjs';
 
 enum CpuLoadStates {
   DEFAULT,
@@ -21,61 +21,83 @@ export class CpuLoadMonitorService {
   private cpuRecoveryStartTime = 0;
 
   constructor(private websocketApiService: WebsocketApiService) {
+    // Subscribe to the websocket payload which contains the CPU load info
+    // and pass it on to the monitorCurrentCpuLoad method to check whether
+    // the CPU is under high load or if it has recovered from a high load.
     this.websocketApiService.cpuPayload.subscribe(msg => {
       this.monitorCurrentCpuLoad(msg.timeSeries);
     });
   }
 
+  /**
+   * Monitors the current CPU load and triggers the appropriate
+   * alerting logic
+   *
+   * @param timeseries
+   */
   monitorCurrentCpuLoad(timeseries: number[][]): void {
     if (!timeseries) return;
+
     let currentCpuLoad = timeseries[timeseries.length - 1][1];
     let timestamp = timeseries[timeseries.length - 1][0];
 
-    /**
-     * If the CPU load average reaches or surpasses the threshold for the
-     * first time, we want to save the timestamp of this message. We also
-     * check if the previous cpu load average is bigger than the current one
-     * that we check, in order to catch the first occurrence of a high CPU load.
-     */
-    if (this.cpuLoadThresholdReached(currentCpuLoad) && !this.isCpuUnderHighLoad() && !this.cpuHighLoadStartTime) {
-      this.cpuHighLoadStartTime = timestamp;
-    }
+    // Check if the most recent data point we have for the CPU load
+    // reached or surpassed the configured CPU load threshold
+    if (this.cpuLoadThresholdReached(currentCpuLoad)) {
 
-    /**
-     * If the CPU load duration threshold has been reached and the CPU
-     * has been under high load for more than the duration threshold, then
-     * we have to notify the user by triggering a toast notification
-     */
-    if (this.cpuLoadDurationThresholdReached(timestamp) && !this.isCpuUnderHighLoad() && this.cpuHighLoadStartTime) {
-      this.cpuLoadState.next(CpuLoadStates.HIGH_LOAD);
-    }
+      if (!this.isCpuUnderHighLoad()) {
 
-    /**
-     * If the CPU load average is below the high load threshold and at
-     * the same time there is an ongoing high load event registered,
-     * it means that the CPU started to recover
-     */
-    if (!this.cpuLoadThresholdReached(currentCpuLoad) && this.isCpuUnderHighLoad()) {
+        // If there is no active high CPU load ongoing, record
+        // the start timestamp of the occurrence of this data point
+        if (!this.cpuHighLoadStartTime) {
+          this.cpuHighLoadStartTime = timestamp;
 
-      if (!this.cpuRecoveryStartTime) {
-        this.cpuRecoveryStartTime = timestamp;
+          // Check if the high load started earlier, especially for
+          // cases when the page was refreshed and historical CPU
+          // load might exist for some points.
+          for (let i = timeseries.length - 1; i >= TIME_WINDOW - CPU_HIGH_LOAD_DURATION; i--) {
+            if (this.cpuLoadThresholdReached(timeseries[i][1])) {
+              this.cpuHighLoadStartTime = timeseries[i][0];
+            } else {
+              break;
+            }
+          }
+        }
+
+        // If the CPU high load duration threshold has been also
+        // reached or surpassed, switch the CPU load state to HIGH_LOAD
+        if (this.cpuLoadDurationThresholdReached(timestamp)) {
+          this.cpuLoadState.next(CpuLoadStates.HIGH_LOAD);
+        }
       }
+    } else if (!this.cpuLoadThresholdReached(currentCpuLoad)) {
+      // If the CPU is currently experiencing a high average load,
+      // while the CPU load dropped to a value below the load threshold,
+      // then it might be that the CPU load has started to stabilize
+      if (this.isCpuUnderHighLoad()) {
 
-      /**
-       * Once the recovery duration threshold has been reached,
-       * we notify the user and reset the values back to their defaults.
-       */
-      if (this.cpuLoadRecoveryThresholdReached(timestamp)) {
-        // We set the CpuLoadState to 'RECOVERED', in order to notify the user,
-        // followed by a 'DEFAULT' state. The latter has no effect other
-        // than being reset to it's initial value.
-        this.cpuLoadState.next(CpuLoadStates.RECOVERED);
-        this.cpuLoadState.next(CpuLoadStates.DEFAULT);
-        this.cpuHighLoadStartTime = 0;
-        this.cpuRecoveryStartTime = 0;
+        // Keep the start time of the recovery, as it might be
+        if (!this.cpuRecoveryStartTime) {
+          this.cpuRecoveryStartTime = timestamp;
+        }
+
+        // Once the CPU load recovery threshold has been reached,
+        // we change from 'HIGH_LOAD' to a 'RECOVERED' state
+        if (this.cpuLoadRecoveryThresholdReached(timestamp)) {
+          // We set the CpuLoadState to 'RECOVERED', in order to notify the user,
+          // followed by a 'DEFAULT' state. The latter has no effect other
+          // than being reset to it's initial value.
+          this.cpuLoadState.next(CpuLoadStates.RECOVERED);
+          this.cpuLoadState.next(CpuLoadStates.DEFAULT);
+          this.cpuHighLoadStartTime = 0;
+          this.cpuRecoveryStartTime = 0;
+        }
       }
     }
 
+    // Update the historical high CPU overview each time the timeseries data
+    // is updated. The reason for that is that we want to keep track of all
+    // high CPU load occurrences in the last 10 minutes window only.
     this.generateHistoricalHighCpuOverview(timeseries);
   }
 

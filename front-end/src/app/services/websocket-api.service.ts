@@ -31,7 +31,7 @@ export class WebsocketApiService {
         // with the websocket connection
         setTimeout(() => {
           this.connect();
-        }, 1000)
+        }, 1000);
       },
       () => {
         console.log('complete')

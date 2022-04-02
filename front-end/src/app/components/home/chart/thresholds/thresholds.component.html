@@ -1,4 +1,14 @@
 <div class="thresholds">
-  <app-threshold-stepper [label]="'Threshold'" [value]="cpuLoadThreshold" (onThresholdChange)="updateThreshold($event)" [unit]="'%'"></app-threshold-stepper>
-  <app-threshold-stepper [label]="'Duration'" [value]="cpuLoadDuration" (onThresholdChange)="updateThreshold($event)" [unit]="'s'"></app-threshold-stepper>
+  <app-threshold-stepper
+    [label]="'Threshold'"
+    [value]="cpuLoadThreshold"
+    (onThresholdChange)="updateThreshold($event)"
+    [unit]="'%'">
+  </app-threshold-stepper>
+  <app-threshold-stepper
+    [label]="'Duration'"
+    [value]="cpuLoadDuration"
+    (onThresholdChange)="updateThreshold($event)"
+    [unit]="'s'">
+  </app-threshold-stepper>
 </div>

@@ -14,19 +14,27 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    // Initiate the chart
+    // Initialize the area chart
     this.createChartLine();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.updateChartLine();
+    // Update the chart each time the timeSeries @Input gets updated.
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        switch (propName) {
+          case 'timeSeries': {
+            this.updateChartLine();
+          }
+        }
+      }
+    }
   }
 
-  private createChartLine(): void {
-    this.chart = Highcharts.chart('chart-line', {
+  createChartLine(): void {
+    this.chart = Highcharts.chart('area-chart', {
       chart: {
-        type: 'area',
-        renderTo: 'chart-line'
+        type: 'area'
       },
       title: {
         text: 'CPU Load History',
@@ -99,7 +107,7 @@ export class ChartComponent implements OnInit, OnChanges {
         },
         data: this.timeSeries
       }],
-    } as any);
+    } as {});
   }
 
   updateChartLine() {
