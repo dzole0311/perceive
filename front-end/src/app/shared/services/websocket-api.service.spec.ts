@@ -6,7 +6,8 @@ describe('WebsocketApiService', () => {
   let service: WebsocketApiService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+    });
     service = TestBed.inject(WebsocketApiService);
   });
 

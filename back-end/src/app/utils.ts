@@ -18,9 +18,6 @@ export const generateCpuPayload = () => {
             freeMemory: os.freemem()
         }
     }
-
-    console.log(cpuLoadPayload.timeSeries[0][0]);
-
     return JSON.stringify(cpuLoadPayload);
 }
 

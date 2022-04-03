@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {CpuLoadMonitorService} from '../../../shared/services/cpu-load-monitor.service';
+import {CPU_HIGH_LOAD_THRESHOLD} from "../../../shared/constants/constants";
 
 @Component({
   selector: 'app-chart',
@@ -60,7 +61,13 @@ export class ChartComponent implements OnInit, OnChanges {
         max: 100,
         labels: {
           format: '{value}%'
-        }
+        },
+        plotLines: [{
+          color: '#FF0000',
+          width: 1,
+          zIndex: 1,
+          value: CPU_HIGH_LOAD_THRESHOLD
+        }]
       },
       xAxis: {
         type: 'datetime',
