@@ -49,6 +49,7 @@ export class IncidentsComponent implements OnInit {
     });
 
     this.cpuLoadMonitorService.historicalCpuLoadOverview.subscribe((overview: number[][]) => {
+      console.log(overview)
       this.historicalCpuLoadOverview = overview;
     });
   }

@@ -8,7 +8,7 @@ import {WebsocketApiService} from "../../services/websocket-api.service";
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public systemOverview: any;
-  public timeSeries: any;
+  public timeSeries: number[][];
 
   constructor(private websocketApi: WebsocketApiService) { }
 

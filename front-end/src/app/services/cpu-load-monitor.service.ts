@@ -21,7 +21,7 @@ export class CpuLoadMonitorService {
   private cpuRecoveryStartTime = 0;
 
   constructor(private websocketApiService: WebsocketApiService) {
-    // Subscribe to the websocket payload which contains the CPU load info
+    // Subscribe to the websocket payload which contains the CPU load data
     // and pass it on to the monitorCurrentCpuLoad method to check whether
     // the CPU is under high load or if it has recovered from a high load.
     this.websocketApiService.cpuPayload.subscribe(msg => {
@@ -42,21 +42,25 @@ export class CpuLoadMonitorService {
     let timestamp = timeseries[timeseries.length - 1][0];
 
     // Check if the most recent data point we have for the CPU load
-    // reached or surpassed the configured CPU load threshold
-    if (this.cpuLoadThresholdReached(currentCpuLoad)) {
+    // has reached or surpassed the configured CPU load threshold
+    if (!this.isCpuUnderHighLoad()) {
 
-      if (!this.isCpuUnderHighLoad()) {
+      if (this.cpuLoadThresholdReached(currentCpuLoad)) {
 
         // If there is no active high CPU load ongoing, record
         // the start timestamp of the occurrence of this data point
         if (!this.cpuHighLoadStartTime) {
           this.cpuHighLoadStartTime = timestamp;
 
-          // Check if the high load started earlier, especially for
-          // cases when the page was refreshed and historical CPU
-          // load might exist for some points.
-          for (let i = timeseries.length - 1; i >= TIME_WINDOW - CPU_HIGH_LOAD_DURATION; i--) {
+          // Check if the high load started earlier, especially if the page was
+          // refreshed by the user. Like this, we also consider any preceding points
+          // that surpassed the load threshold and use them in the calculation when
+          // checking if the duration threshold has been surpassed, before publishing
+          // an alert.
+          for (let i = timeseries.length - 1; i >= TIME_WINDOW - this.cpuHighLoadDurationThreshold.value; i--) {
             if (this.cpuLoadThresholdReached(timeseries[i][1])) {
+              // Re-assign the start time of the high load occurrence to the
+              // earliest known data point that has surpassed the threshold
               this.cpuHighLoadStartTime = timeseries[i][0];
             } else {
               break;
@@ -66,16 +70,13 @@ export class CpuLoadMonitorService {
 
         // If the CPU high load duration threshold has been also
         // reached or surpassed, switch the CPU load state to HIGH_LOAD
-        if (this.cpuLoadDurationThresholdReached(timestamp)) {
+        if (this.cpuLoadDurationThresholdReached(timestamp, this.cpuHighLoadStartTime)) {
           this.cpuLoadState.next(CpuLoadStates.HIGH_LOAD);
         }
       }
-    } else if (!this.cpuLoadThresholdReached(currentCpuLoad)) {
-      // If the CPU load is below the threshold, 2 things are probably happening:
-      // 1. The CPU has been stable for a while - handled
-      // 2. The CPU was under high load, but started to stabilize -> this is the first occurrence - handled
-      // 3. The threshold has been increased by the user -> the under high load check below should be invalidated
-      if (this.isCpuUnderHighLoad()) {
+    } else if (this.isCpuUnderHighLoad()) {
+
+      if (!this.cpuLoadThresholdReached(currentCpuLoad)) {
 
         // Keep the start time of the recovery, because we need to count
         if (!this.cpuRecoveryStartTime) {
@@ -84,12 +85,8 @@ export class CpuLoadMonitorService {
 
         // Once the CPU load recovery threshold has been reached,
         // we change from 'HIGH_LOAD' to a 'RECOVERED' state
-        if (this.cpuLoadRecoveryThresholdReached(timestamp)) {
-          // We set the CpuLoadState to 'RECOVERED', in order to notify the user,
-          // followed by a 'DEFAULT' state. The latter has no effect other
-          // than being reset to it's initial value.
+        if (this.cpuLoadRecoveryThresholdReached(timestamp, this.cpuRecoveryStartTime)) {
           this.cpuLoadState.next(CpuLoadStates.RECOVERED);
-          this.cpuLoadState.next(CpuLoadStates.DEFAULT);
           this.cpuHighLoadStartTime = 0;
           this.cpuRecoveryStartTime = 0;
         }
@@ -110,12 +107,12 @@ export class CpuLoadMonitorService {
     return cpuLoad >= this.cpuHighLoadThreshold.value;
   }
 
-  cpuLoadDurationThresholdReached(timestamp: number) {
-    return (timestamp - this.cpuHighLoadStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
+  cpuLoadDurationThresholdReached(timestamp: number, highLoadStartTime: number) {
+    return (timestamp - highLoadStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
   }
 
-  cpuLoadRecoveryThresholdReached(timestamp: number) {
-    return (timestamp - this.cpuRecoveryStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
+  cpuLoadRecoveryThresholdReached(timestamp: number, recoveryStartTime: number) {
+    return (timestamp - recoveryStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
   }
 
   /**
@@ -129,6 +126,7 @@ export class CpuLoadMonitorService {
     this.historicalCpuLoadOverview.next([]);
     let interval: number[] = [];
     let startTime = 0;
+    let endTime = 0;
     let isPreviousLoadBigger = false;
 
     for (let i = 0; i < timeseries.length; i++) {
@@ -139,13 +137,16 @@ export class CpuLoadMonitorService {
 
       if (!this.cpuLoadThresholdReached(timeseries[i][1]) && isPreviousLoadBigger) {
 
-        if ((timeseries[i][0] - startTime) / 1000 > this.cpuHighLoadDurationThreshold.value) {
+        if (!endTime) endTime = timeseries[i][0];
+
+        if (this.cpuLoadDurationThresholdReached(timeseries[i][0], startTime) && this.cpuLoadRecoveryThresholdReached(timeseries[i][0], endTime)) {
           interval.push(startTime, timeseries[i][0]);
           let historicalCpuLoadOverviewCurrentValue = this.historicalCpuLoadOverview.value;
           let historicalCpuLoadOverviewUpdatedValue = [...historicalCpuLoadOverviewCurrentValue, interval];
           this.historicalCpuLoadOverview.next(historicalCpuLoadOverviewUpdatedValue);
           // Resets
           startTime = 0;
+          endTime = 0;
           interval = [];
           isPreviousLoadBigger = false;
         }

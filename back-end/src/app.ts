@@ -16,13 +16,14 @@ const wss = new WebSocket.Server({ server: server });
 
 const port: number = 3000;
 
-// Publish the payload once a connection has been opened
+// Publish the whole payload once a connection from the front-end
+// has been opened
 wss.on('connection', (ws: WebSocket) => {
     ws.send(JSON.stringify(generateCpuPayload()));
 });
 
-// Trigger an interval that publishes a new system overview
-// payload to the front-end via a websocket connection
+// Start an interval that publishes an updated CPU payload
+// to the front-end via a websocket connection
 setInterval(() => {
     let updatedCpuPayload = generateCpuPayload();
     wss.clients.forEach((ws) => {

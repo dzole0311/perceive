@@ -17,6 +17,7 @@ interface CpuLoadPayload {
   providedIn: 'root'
 })
 export class WebsocketApiService {
+  // BehaviorSubjects should provide an initial value.
   public cpuPayload = new BehaviorSubject<CpuLoadPayload>(this.initDefaults());
   private subject = webSocket("ws://localhost:3000");
 
@@ -30,13 +31,12 @@ export class WebsocketApiService {
       err => {
         console.log('An error occurred, reconnecting...', err);
         // Try to reconnect after a timeout, in case an error occurs
-        // with the websocket connection
         setTimeout(() => {
           this.connect();
         }, 1000);
       },
       () => {
-        console.log('complete')
+        console.log('complete');
       }
     );
   }

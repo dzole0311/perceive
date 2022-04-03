@@ -28,7 +28,8 @@ export const generateCpuPayload = () => {
  * Generates an empty timeseries data when the app is
  * started for the first time. The data spans back
  * 10 minutes in time, with the y points being
- * set to null.
+ * set to a negative number. Negative numbers are ignored
+ * because the min is set to 0 for our yAxis in Higcharts.
  */
 const generateDefaultTimeSeriesData = () => {
     const timeSeries = [];

@@ -5,14 +5,17 @@
              alt="CPU Load notification"
              [ngClass]="{ 'blink' : isCpuUnderHighLoad()}"
              [src]="isCpuUnderHighLoad() ? './assets/images/circle-exclamation-solid.svg' : './assets/images/circle-check-solid.svg'"/>
-        <span>{{ isCpuUnderHighLoad() ? 'High CPU load detected' : 'The CPU load is currently stable' }}</span>
+        <span><strong>{{ isCpuUnderHighLoad() ? 'High CPU load detected' : 'The CPU load is currently stable' }}</strong></span>
       </div>
   </div>
   <div class="card__body">
     <span>Total recoveries in the past {{ timeWindow }}: {{ historicalCpuLoadOverview?.length }}</span>
     <div class="card__item" *ngFor="let item of historicalCpuLoadOverview">
       <span>{{item[0] | date:'HH:mm:ss' }} - {{item[1] | date:'HH:mm:ss'}}</span>
-      <span><img class="card__icon" src="./assets/images/circle-check-solid.svg"/> Recovered</span>
+      <span>
+        <img class="card__icon" src="./assets/images/circle-check-solid.svg" alt="CPU recovered from high load"/>
+        Recovered
+      </span>
     </div>
   </div>
 </div>

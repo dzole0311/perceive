@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'cpu-load-angular'`, () => {
+  it(`should have as title 'perceive'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('cpu-load-angular');
+    expect(app.title).toEqual('perceive');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('cpu-load-angular app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('perceive app is running!');
   });
 });
