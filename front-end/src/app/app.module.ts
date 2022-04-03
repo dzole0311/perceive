@@ -15,8 +15,6 @@ import { ChartModule } from 'angular-highcharts';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ThresholdsComponent } from './components/home/chart/thresholds/thresholds.component';
-import { ThresholdStepperComponent } from './components/home/chart/thresholds/threshold-stepper/threshold-stepper.component';
 import { PlatformComponent } from './components/home/system-overview/platform/platform.component';
 import { CpuCountComponent } from './components/home/system-overview/cpu-count/cpu-count.component';
 import { UptimeComponent } from './components/home/system-overview/uptime/uptime.component';
@@ -33,8 +31,6 @@ import { CardMediaComponent } from './components/home/system-overview/card-media
     HomeComponent,
     IncidentsComponent,
     HeaderComponent,
-    ThresholdsComponent,
-    ThresholdStepperComponent,
     PlatformComponent,
     CpuCountComponent,
     UptimeComponent,
