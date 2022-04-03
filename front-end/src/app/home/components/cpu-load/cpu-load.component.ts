@@ -70,7 +70,7 @@ export class CpuLoadComponent implements OnInit, OnChanges {
           y: 0
         }]
       }]
-    } as any);
+    } as {});
   }
 
   updateCpuLoadChart(timeSeries: number[][]) {
@@ -78,7 +78,7 @@ export class CpuLoadComponent implements OnInit, OnChanges {
     // Update the CPU load pie chart by taking the most recent item from the timeseries array
     let timeseriesMostRecentItem = timeSeries[timeSeries.length - 1];
     this.chart.series[1].setData([timeseriesMostRecentItem[1], 100 - timeseriesMostRecentItem[1]]);
-    // Update the subtitle centered in the pie-chart
+    // Update the subtitle which is centered in the middle of the pie-chart
     this.chart.setSubtitle({text: Math.round(timeseriesMostRecentItem[1]).toString() + '%'});
   }
 }
