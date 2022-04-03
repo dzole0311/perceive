@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UptimeComponent } from './uptime.component';
+import {CardMediaComponent} from "../card-media/card-media.component";
 
 describe('UptimeComponent', () => {
   let component: UptimeComponent;
@@ -8,7 +9,7 @@ describe('UptimeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UptimeComponent ]
+      declarations: [ UptimeComponent, CardMediaComponent ]
     })
     .compileComponents();
   });

@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
-import {CpuLoadMonitorService} from '../../../services/cpu-load-monitor.service';
+import {CpuLoadMonitorService} from '../../../shared/services/cpu-load-monitor.service';
 
 @Component({
   selector: 'app-chart',

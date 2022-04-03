@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlatformComponent } from './platform.component';
+import {CardMediaComponent} from "../card-media/card-media.component";
 
 describe('PlatformComponent', () => {
   let component: PlatformComponent;
@@ -8,7 +9,7 @@ describe('PlatformComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlatformComponent ]
+      declarations: [ PlatformComponent, CardMediaComponent ]
     })
     .compileComponents();
   });

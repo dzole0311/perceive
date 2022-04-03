@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { animate, style, transition, trigger } from '@angular/animations';
-import {CpuLoadMonitorService} from '../../../services/cpu-load-monitor.service';
-import {TIME_WINDOW} from '../../../constants/constants';
+import {CpuLoadMonitorService} from '../../../shared/services/cpu-load-monitor.service';
+import {TIME_WINDOW} from '../../../shared/constants/constants';
 import {formatTime} from "../../../shared/utils";
 
 enum ToastMessages {
@@ -19,12 +18,7 @@ enum CpuLoadStates {
 @Component({
   selector: 'app-incidents',
   templateUrl: './incidents.component.html',
-  styleUrls: ['./incidents.component.scss'],
-  animations: [
-    trigger('cardAnimate', [
-      transition(':enter', [style({transform: 'scale(0.7)'}), animate('200ms')])
-    ])
-  ]
+  styleUrls: ['./incidents.component.scss']
 })
 export class IncidentsComponent implements OnInit {
   @Input() timeSeries: any;
@@ -49,7 +43,6 @@ export class IncidentsComponent implements OnInit {
     });
 
     this.cpuLoadMonitorService.historicalCpuLoadOverview.subscribe((overview: number[][]) => {
-      console.log(overview)
       this.historicalCpuLoadOverview = overview;
     });
   }

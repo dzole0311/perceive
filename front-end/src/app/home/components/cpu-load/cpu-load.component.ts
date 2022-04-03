@@ -1,16 +1,10 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from "highcharts";
-import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-cpu-load',
   templateUrl: './cpu-load.component.html',
-  styleUrls: ['./cpu-load.component.scss'],
-  animations: [
-    trigger('cardAnimate', [
-      transition(':enter', [style({transform: 'scale(0.7)'}), animate('200ms')])
-    ])
-  ]
+  styleUrls: ['./cpu-load.component.scss']
 })
 export class CpuLoadComponent implements OnInit, OnChanges {
   @Input() timeSeries: number[][];
@@ -32,9 +26,6 @@ export class CpuLoadComponent implements OnInit, OnChanges {
         type: 'pie',
         renderTo: 'chart-pie'
       },
-      credits: {
-        enabled: false,
-      },
       title: {
         text: 'CPU Load average',
         align: 'left',
@@ -51,6 +42,9 @@ export class CpuLoadComponent implements OnInit, OnChanges {
           fontFamily: 'Roboto',
           transform: 'translateY(35px)'
         }
+      },
+      credits: {
+        enabled: false,
       },
       colors: ['#5C6BC0', '#D1C4E9'],
       tooltip: {

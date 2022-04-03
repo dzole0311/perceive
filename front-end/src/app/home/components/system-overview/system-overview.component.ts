@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import {CpuLoadPayload} from "../../../interfaces/interfaces";
+import {CpuLoadPayload} from "../../../shared/interfaces/interfaces";
 import {formatBytes, formatTime} from '../../../shared/utils';
 
 

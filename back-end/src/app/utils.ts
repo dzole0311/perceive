@@ -1,6 +1,6 @@
 import * as os from 'os';
 import { INTERVAL, TIME_WINDOW } from './constants';
-import { CpuLoadPayload } from '../../../front-end/src/app/interfaces/interfaces';
+import { CpuLoadPayload } from '../../../front-end/src/app/shared/interfaces/interfaces';
 
 let cpuLoadPayload: CpuLoadPayload;
 

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {WebsocketApiService} from "../../services/websocket-api.service";
+import {WebsocketApiService} from "../../shared/services/websocket-api.service";
 
 @Component({
   selector: 'app-home',
