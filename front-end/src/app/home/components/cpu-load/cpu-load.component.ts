@@ -1,19 +1,62 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import * as Highcharts from "highcharts";
+import {ChangeDetectorRef, Component, HostListener, Input, OnChanges, SimpleChanges} from '@angular/core';
+import * as Highcharts from 'highcharts';
+import { Chart} from "highcharts";
+import {SubtitleOptions} from 'highcharts';
 
 @Component({
   selector: 'app-cpu-load',
-  templateUrl: './cpu-load.component.html'
+  templateUrl: './cpu-load.component.html',
+  styleUrls: ['./cpu-load.component.scss']
 })
-export class CpuLoadComponent implements OnInit, OnChanges {
+export class CpuLoadComponent implements OnChanges {
   @Input() timeSeries: number[][];
-  private chart: Highcharts.Chart;
-
-  constructor() { }
-
-  ngOnInit() {
-    this.createCpuLoadChart();
+  public updateFlag = false;
+  // Configs for the subtitle
+  private subtitleOptions: SubtitleOptions = {
+    align: 'center',
+    verticalAlign: 'middle',
+    style: {
+      'fontSize': '65px'
+    },
+    y: 95
+  };
+  // Make Highcharts and the chartOptions public, as they won't be
+  // resolved from the component template when using an AOT compiler
+  public Highcharts: typeof Highcharts = Highcharts;
+  public chart: Chart;
+  public chartOptions: Highcharts.Options = {
+    chart: {
+      type: 'pie',
+      renderTo: 'chart-pie'
+    },
+    title: {
+      text: 'CPU Load average',
+      align: 'left',
+      margin: 50,
+      style: {
+        fontWeight: 'bold'
+      }
+    },
+    subtitle: {
+      text: '',
+      ...this.subtitleOptions
+    },
+    credits: {
+      enabled: false,
+    },
+    colors: ['#5C6BC0', '#D1C4E9'],
+    tooltip: {
+      enabled: false
+    },
+    plotOptions: {
+      pie: {
+        innerSize: '80%',
+        size: '100%',
+      }
+    }
   }
+
+  constructor(private ref: ChangeDetectorRef) { }
 
   ngOnChanges(changes: SimpleChanges) {
     // Update the chart each time the timeSeries @Input gets updated.
@@ -28,65 +71,26 @@ export class CpuLoadComponent implements OnInit, OnChanges {
     }
   }
 
-  createCpuLoadChart() {
-    this.chart = Highcharts.chart('chart-pie', {
-      chart: {
-        type: 'pie',
-        renderTo: 'chart-pie'
-      },
-      title: {
-        text: 'CPU Load average',
-        align: 'left',
-        margin: 50,
-        style: {
-          fontWeight: 'bold'
-        }
-      },
-      subtitle: {
-        text: '',
-        verticalAlign: 'middle',
-        style: {
-          fontSize: '60px',
-          fontFamily: 'Roboto',
-          transform: 'translateY(35px)'
-        }
-      },
-      credits: {
-        enabled: false,
-      },
-      colors: ['#5C6BC0', '#D1C4E9'],
-      tooltip: {
-        enabled: false
-      },
-      series: [{
-        size: '0',
-        name: 'Versions',
-        data: []
-      }, {
-        innerSize: '80%',
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: false
-        },
-        name: 'CPU usage',
-        data: [{
-          name: 'CPU usage',
-          y: 0,
-          selected: true,
-        }, {
-          name: '',
-          y: 0
-        }]
-      }]
-    } as {});
-  }
-
   updateCpuLoadChart(timeSeries: number[][]) {
-    if (!this.chart || !timeSeries) return;
     // Update the CPU load pie chart by taking the most recent item from the timeseries array
     let timeseriesMostRecentItem = timeSeries[timeSeries.length - 1];
-    this.chart.series[1].setData([timeseriesMostRecentItem[1], 100 - timeseriesMostRecentItem[1]]);
-    // Update the subtitle which is centered in the middle of the pie-chart
-    this.chart.setSubtitle({text: Math.round(timeseriesMostRecentItem[1]).toString() + '%'});
+
+    this.chartOptions.series = [{
+      data: [timeseriesMostRecentItem[1], 100 - timeseriesMostRecentItem[1] ],
+      type: 'pie',
+      dataLabels: {
+        enabled: false
+      }
+    }]
+
+    // Update the subtitle centered in the middle of the pie-chart
+    this.chartOptions.subtitle = {
+      text: Math.round(timeseriesMostRecentItem[1]).toString() + '%',
+      ...this.subtitleOptions
+    };
+
+    this.updateFlag = true;
+    // Notify Angular to detect the changes and update the chart
+    this.ref.detectChanges();
   }
 }

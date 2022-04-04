@@ -1,9 +1,9 @@
 import { formatTime, formatBytes } from './utils';
 
 it('should format the seconds to a valid time string', () => {
-  expect(formatTime(1)).toBe('1s');
-  expect(formatTime(1107)).toBe('18mins');
-  expect(formatTime(4800)).toBe('1.3h');
+  expect(formatTime(1)).toBe('1 s');
+  expect(formatTime(1107)).toBe('18 mins');
+  expect(formatTime(4800)).toBe('1.3 h');
 });
 
 it('should format the bytes input to a correct memory unit', () => {

@@ -1,18 +1,30 @@
 .header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   height: 100px;
   box-sizing: border-box;
   width: 100%;
   padding: 0 50px;
   background-color: var(--main-color);
 
-  &__top {
-    display: flex;
-    justify-content: center;
-    padding: 20px 0;
+  &__logo {
+
+    fa-icon {
+      color: var(--accent2-color);
+    }
   }
 
-  fa-icon {
-    color: #ffffff;
+  &__nav {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    a {
+      color: var(--accent2-color);
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+    }
   }
 }

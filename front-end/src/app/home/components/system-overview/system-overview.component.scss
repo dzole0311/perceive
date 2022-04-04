@@ -1,13 +1,19 @@
 @import '../../../../assets/stylesheets/layout';
 
 :host {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
+  flex-wrap: wrap;
 
-  @media (max-width: map-get($grid-breakpoints, 'xxl')) {
-    grid-template-columns: 1fr;
+  > * {
+    width: calc(50% - 15px);
+    margin-bottom: 20px;
+
+    @media (max-width: map-get($grid-breakpoints, xxl)) {
+      width: 100%;
+    }
+
+    @media (max-width: map-get($grid-breakpoints, xl)) {
+      width: 49%;
+    }
   }
 }
 

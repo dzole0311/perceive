@@ -1,7 +1,14 @@
+@import '../../../../../assets/stylesheets/layout';
+
 .card__media {
   display: flex;
   justify-content: space-between;
   height: calc(100% - 40px);
+  flex-direction: column-reverse;
+
+  @media (max-width: map-get($grid-breakpoints, xl)) {
+    margin-bottom: 0;
+  }
 
   &-image, img {
     display: flex;
@@ -17,7 +24,6 @@
 
   &-title {
     font-size: 38px;
-    text-transform: capitalize;
   }
 
   &-description {

@@ -17,7 +17,6 @@ interface CpuLoadPayload {
   providedIn: 'root'
 })
 export class WebsocketApiService {
-  // BehaviorSubjects should provide an initial value.
   public cpuPayload: BehaviorSubject<CpuLoadPayload> = new BehaviorSubject<CpuLoadPayload>(this.initDefaults());
   private subject = webSocket("ws://localhost:3000");
 
@@ -36,13 +35,13 @@ export class WebsocketApiService {
         }, 1000);
       },
       () => {
-        console.log('complete');
+        console.log('Complete');
       }
     );
   }
 
   /**
-   * Initiate default values for the cpuPayload.
+   * Initiates default values for the cpuPayload BehaviorSubject.
    */
   initDefaults() {
     return {

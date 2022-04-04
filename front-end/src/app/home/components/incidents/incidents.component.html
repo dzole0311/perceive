@@ -9,7 +9,7 @@
       </div>
   </div>
   <div class="card__body">
-    <span>Total recoveries in the past {{ timeWindow }}: {{ historicalCpuLoadOverview?.length }}</span>
+    <span>Total recoveries in the past {{ timeWindow }}: <span> {{ historicalCpuLoadOverview?.length }}</span></span>
     <div class="card__item" *ngFor="let item of historicalCpuLoadOverview">
       <span>{{item[0] | date:'HH:mm:ss' }} - {{item[1] | date:'HH:mm:ss'}}</span>
       <span>

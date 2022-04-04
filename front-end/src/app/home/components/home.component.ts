@@ -1,6 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {WebsocketApiService} from "../../shared/services/websocket-api.service";
 import {CpuLoadPayload} from "../../shared/interfaces/interfaces";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -10,17 +11,18 @@ import {CpuLoadPayload} from "../../shared/interfaces/interfaces";
 export class HomeComponent implements OnInit, OnDestroy {
   public systemOverview: any;
   public timeSeries: number[][];
+  private websocketApiSubscription: Subscription;
 
   constructor(private websocketApi: WebsocketApiService) { }
 
   ngOnInit(): void {
-    this.websocketApi.cpuPayload.subscribe((msg: CpuLoadPayload) => {
+    this.websocketApiSubscription = this.websocketApi.cpuPayload.subscribe((msg: CpuLoadPayload) => {
       this.timeSeries = msg.timeSeries;
       this.systemOverview = msg.systemOverview;
     });
   }
 
   ngOnDestroy(): void {
-    this.websocketApi.cpuPayload.unsubscribe();
+    this.websocketApiSubscription.unsubscribe();
   }
 }

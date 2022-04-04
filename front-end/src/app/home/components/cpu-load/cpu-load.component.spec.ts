@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CpuLoadComponent } from './cpu-load.component';
+import {HighchartsChartComponent, HighchartsChartModule} from "highcharts-angular";
+import {ChartModule} from "angular-highcharts";
 
 describe('CpuLoadComponent', () => {
   let component: CpuLoadComponent;
@@ -7,7 +9,8 @@ describe('CpuLoadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CpuLoadComponent ]
+      declarations: [ HighchartsChartComponent, CpuLoadComponent ],
+      imports: [ HighchartsChartModule, ChartModule ]
     })
       .compileComponents();
   });

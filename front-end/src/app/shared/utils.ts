@@ -1,5 +1,6 @@
 /**
- * Takes seconds as an input and does formatting
+ * Takes seconds as an input and returns a string formatted
+ * depending on the total seconds
  *
  * @param seconds
  */
@@ -7,29 +8,29 @@ export const formatTime = (seconds: number) => {
   let result = '';
 
   if (seconds < 60) {
-    result = `${seconds}s`;
+    result = `${seconds} s`;
   } else if (seconds >= 60 && seconds < 3600) {
     let minutes = Math.round(seconds / 60);
-    result = `${minutes}mins`;
+    result = `${minutes} mins`;
   } else if (seconds > 3600) {
     let hours = Math.round(seconds / 3600 * 10) / 10;
-    result = `${hours}h`;
+    result = `${hours} h`;
   }
 
   return result;
 }
 
 /**
- * Takes an input in the form of bytes and formats it
+ * Takes an input in the form of bytes and decimals and formats it
  *
  * @param bytes
  * @param decimals
  */
 export const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return 0;
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const result = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+  const kilobytes = 1024;
+  const decim = decimals < 0 ? 0 : decimals;
+  const i = Math.floor(Math.log(bytes) / Math.log(kilobytes));
+  const result = parseFloat((bytes / Math.pow(kilobytes, i)).toFixed(decim));
   return result ? result : 0;
 }

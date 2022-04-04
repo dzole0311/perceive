@@ -2,8 +2,12 @@ import express, { Application } from 'express';
 import * as http from 'http';
 import * as WebSocket from 'ws';
 
-import { INTERVAL } from './app/constants';
-import {initSystemOverviewData, initTimeSeriesData, updateTimeSeriesData} from './app/utils';
+import {PUBLISH_INTERVAL} from './app/constants';
+import {
+    generateEmptyTimeSeriesData,
+    generateSystemOverviewData,
+    updateTimeSeriesData
+} from './app/utils';
 import {CpuLoadPayload} from "../../front-end/src/app/shared/interfaces/interfaces";
 
 // loadavg-windows serves as a platform-independent implementation of os.loadavg()
@@ -17,30 +21,43 @@ const wss = new WebSocket.Server({ server: server });
 
 const port: number = 3000;
 
+// The CPU load payload that is sent to the front-end.
+// The payload consists of the time series data and details
+// about the user's system
 let cpuLoadPayload: CpuLoadPayload = {
-    timeSeries: initTimeSeriesData(),
-    systemOverview: initSystemOverviewData()
+    timeSeries: generateEmptyTimeSeriesData(),
+    systemOverview: generateSystemOverviewData()
 };
 
-// Publish the whole payload once a connection from the front-end
-// has been opened
+// Publish the whole payload once a connection has been opened
 wss.on('connection', (ws: WebSocket) => {
     ws.send(JSON.stringify(cpuLoadPayload));
 });
 
-// Start an interval that publishes an updated CPU payload
-// to the front-end via a websocket connection
-setInterval(() => {
-    cpuLoadPayload.systemOverview = initSystemOverviewData();
-    cpuLoadPayload.timeSeries = updateTimeSeriesData(cpuLoadPayload.timeSeries);
+// Update the CPU payload every second, but serve it to the client based on the
+// PUBLISH_INTERVAL (the default is set to 10 seconds). Fixes an edge case where
+// the timestamps start to diverge for more than the time window (ten minutes)
+// after a while after a while.
+let counter = 0;
 
-    console.log(cpuLoadPayload.timeSeries[0][0]);
-    console.log(cpuLoadPayload.timeSeries[cpuLoadPayload.timeSeries.length - 1][0])
-    console.log('done')
+setInterval(() => {
+    // Update the CPU payload
+    cpuLoadPayload.timeSeries = updateTimeSeriesData(cpuLoadPayload.timeSeries);
+    cpuLoadPayload.systemOverview = generateSystemOverviewData();
+
+    if (counter !== PUBLISH_INTERVAL) {
+        counter++;
+        return;
+    }
+
     wss.clients.forEach((ws) => {
         ws.send(JSON.stringify(cpuLoadPayload));
     });
-}, INTERVAL);
+
+    counter = 0;
+
+}, 1000);
+
 
 server.listen(port, () => {
     console.log(`App is listening on port ${port}`)

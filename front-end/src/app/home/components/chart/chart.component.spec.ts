@@ -1,10 +1,10 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import { ChartComponent } from './chart.component';
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import * as normalLoadMockData from "../../../../assets/mocks/normal-load-mock.json";
-import {TIME_WINDOW} from "../../../shared/constants/constants";
-
-const normalLoadMock = normalLoadMockData;
+import {HighchartsChartModule} from "highcharts-angular";
+import {ChartModule} from "angular-highcharts";
+import {By} from "@angular/platform-browser";
+import {SimpleChange} from "@angular/core";
 
 describe('ChartComponent', () => {
   let component: ChartComponent;
@@ -12,7 +12,7 @@ describe('ChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [ HttpClientTestingModule, HighchartsChartModule, ChartModule ],
       declarations: [ ChartComponent ]
     })
       .compileComponents();
@@ -21,8 +21,6 @@ describe('ChartComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ChartComponent);
     component = fixture.componentInstance;
-    component.timeSeries = normalLoadMock.timeSeries;
-    component.ngOnInit();
     fixture.detectChanges();
   });
 
@@ -30,23 +28,26 @@ describe('ChartComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should contain the correct amount of points for the past 10 minutes (the TIME_WINDOW)', () => {
-    let chart = component['chart'];
-    expect(chart.series[0].data.length).toBe(TIME_WINDOW);
+  it('should set the correct title)', () => {
+    const title = fixture.debugElement.query(By.css('.highcharts-title')).nativeElement;
+    expect(title.textContent).toBe('CPU Load History');
+  });
+
+  it('should set useUTC to false for axis scaling', () => {
+    expect(component.chartOptions.time?.useUTC).toBeFalse();
+  });
+
+  it('should update the chart when the timeSeries have been updated', () => {
+    const updateChartLineSpy = spyOn(component, 'updateChartLine');
+    component.ngOnChanges({
+      // Mock only the timeSeries prop, as that's the one that is
+      // checked. No need to fill in the other values
+      timeSeries: new SimpleChange('', '', false),
+    });
+    expect(updateChartLineSpy).toHaveBeenCalled();
   });
 
   it('should display the legend for the chart', () => {
-    let chart = component['chart'];
-    expect(chart.options.legend?.enabled).toBe(true);
-  });
-
-  it('should display the correct title', () => {
-    let chart = component['chart'];
-    expect(chart.options.title?.text).toBe('CPU Load History');
-  });
-
-  it('should not use UTC time for axis scaling', () => {
-    let chart = component['chart'];
-    expect(chart.options.time?.useUTC).toBe(false);
+    expect(component.chartOptions.legend?.enabled).toBeTrue();
   });
 });

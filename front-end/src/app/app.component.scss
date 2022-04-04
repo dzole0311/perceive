@@ -11,8 +11,6 @@
   --dark-gray: #212121;
   --danger-color: #B00020;
   --success-color: #43A047;
-  --scrollbarBG: #CFD8DC;
-  --scrollbarThumbColor: #90A4AE;
 }
 
 html, body {
@@ -31,6 +29,7 @@ p, h1, h2, h3, h4, h5, span, a {
   padding: 20px;
   background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  margin-bottom: 20px;
 
   &__title {
     display: flex;

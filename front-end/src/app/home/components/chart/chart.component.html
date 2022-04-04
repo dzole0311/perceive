@@ -1,3 +1,7 @@
 <div class="card">
-  <div id="area-chart"></div>
+  <highcharts-chart
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    [(update)]="updateFlag">
+  </highcharts-chart>
 </div>

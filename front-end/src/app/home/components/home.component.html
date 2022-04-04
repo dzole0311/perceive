@@ -1,6 +1,10 @@
 <div class="main">
-  <app-chart [timeSeries]="timeSeries"></app-chart>
-  <app-cpu-load [timeSeries]="timeSeries"></app-cpu-load>
-  <app-system-overview [systemOverviewData]="systemOverview"></app-system-overview>
-  <app-incidents [timeSeries]="timeSeries"></app-incidents>
+  <div class="main__row">
+    <app-chart [timeSeries]="timeSeries"></app-chart>
+  </div>
+  <div class="main__row">
+    <app-cpu-load [timeSeries]="timeSeries"></app-cpu-load>
+    <app-system-overview [systemOverviewData]="systemOverview"></app-system-overview>
+    <app-incidents [timeSeries]="timeSeries"></app-incidents>
+  </div>
 </div>

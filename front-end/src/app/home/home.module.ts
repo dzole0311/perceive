@@ -10,6 +10,7 @@ import {UptimeComponent} from "./components/system-overview/uptime/uptime.compon
 import {PlatformComponent} from "./components/system-overview/platform/platform.component";
 import {FreeMemoryComponent} from "./components/system-overview/free-memory/free-memory.component";
 import {CardMediaComponent} from "./components/system-overview/card-media/card-media.component";
+import {HighchartsChartModule} from "highcharts-angular";
 
 @NgModule({
   declarations: [
@@ -24,8 +25,9 @@ import {CardMediaComponent} from "./components/system-overview/card-media/card-m
     PlatformComponent,
     FreeMemoryComponent
   ],
-  imports: [
-    CommonModule
-  ]
+    imports: [
+        CommonModule,
+        HighchartsChartModule
+    ]
 })
 export class HomeModule { }

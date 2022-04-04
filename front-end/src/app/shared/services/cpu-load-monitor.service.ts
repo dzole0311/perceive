@@ -23,15 +23,14 @@ export class CpuLoadMonitorService {
   constructor(private websocketApiService: WebsocketApiService) {
     // Subscribe to the websocket payload which contains the CPU load data
     // and pass it on to the monitorCurrentCpuLoad method to check whether
-    // the CPU is under high load or if it has recovered from a high load.
+    // the CPU is under high load.
     this.websocketApiService.cpuPayload.subscribe(msg => {
       this.monitorCurrentCpuLoad(msg.timeSeries);
     });
   }
 
   /**
-   * Monitors the current CPU load and triggers the appropriate
-   * alerting logic
+   * Monitors the current CPU load and triggers the different CPU load states
    *
    * @param timeseries
    */
@@ -78,13 +77,13 @@ export class CpuLoadMonitorService {
 
       if (!this.cpuLoadThresholdReached(currentCpuLoad)) {
 
-        // Keep the start time of the recovery, because we need to count
+        // Save the start time when the CPU load started to normalize again
         if (!this.cpuRecoveryStartTime) {
           this.cpuRecoveryStartTime = timestamp;
         }
 
-        // Once the CPU load recovery threshold has been reached,
-        // we change from 'HIGH_LOAD' to a 'RECOVERED' state
+        // Once the CPU load recovery threshold has been reached, change
+        // from 'HIGH_LOAD' to a 'RECOVERED' state
         if (this.cpuLoadRecoveryThresholdReached(timestamp, this.cpuRecoveryStartTime)) {
           this.cpuLoadState.next(CpuLoadStates.RECOVERED);
           this.cpuHighLoadStartTime = 0;
@@ -94,57 +93,90 @@ export class CpuLoadMonitorService {
     }
 
     // Update the historical high CPU overview each time the timeseries data
-    // is updated. The reason for that is that we want to keep track of all
-    // high CPU load occurrences in the last 10 minutes window only.
+    // is updated. This keeps track of all high CPU load occurrences in the
+    // last 10 minutes only, which is the fixed time window used by the app.
     this.generateHistoricalHighCpuOverview(timeseries);
   }
 
+  /**
+   * Indicates whether the CPU is under ongoing high load
+   */
   isCpuUnderHighLoad() {
     return this.cpuLoadState.value === CpuLoadStates.HIGH_LOAD;
   }
 
+  /**
+   * Indicates whether the CPU load threshold has been reached
+   *
+   * @param cpuLoad
+   */
   cpuLoadThresholdReached(cpuLoad: number) {
     return cpuLoad >= this.cpuHighLoadThreshold.value;
   }
 
+  /**
+   * Indicates whether the CPU load duration has been reached
+   *
+   * @param timestamp
+   * @param highLoadStartTime
+   */
   cpuLoadDurationThresholdReached(timestamp: number, highLoadStartTime: number) {
-    return (timestamp - highLoadStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
-  }
-
-  cpuLoadRecoveryThresholdReached(timestamp: number, recoveryStartTime: number) {
-    return (timestamp - recoveryStartTime) / 1000 > this.cpuHighLoadDurationThreshold.value;
+    return (timestamp - highLoadStartTime) / 1000 >= this.cpuHighLoadDurationThreshold.value;
   }
 
   /**
-   * Generates intervals [from, to] from all of the high cpu load occurrences
-   * in the past 10 minutes. The result is used by the cpu-load component to
-   * give the user an overview of the past high CPU load occurrences.
+   * Indicates whether the CPU load recovery threshold has been reached
+   *
+   * @param timestamp
+   * @param recoveryStartTime
+   */
+  cpuLoadRecoveryThresholdReached(timestamp: number, recoveryStartTime: number) {
+    return (timestamp - recoveryStartTime) / 1000 >= this.cpuHighLoadDurationThreshold.value;
+  }
+
+  /**
+   * Generates intervals [start, end] from all of the high cpu load occurrences
+   * in the past 10 minutes. The result is used by the incidents component to
+   * provide an overview of the past high CPU load cases.
    *
    * @param timeseries
    */
   generateHistoricalHighCpuOverview(timeseries: number[][]) {
+    // Reset the existing historical CPU overview data
     this.historicalCpuLoadOverview.next([]);
     let interval: number[] = [];
     let startTime = 0;
     let endTime = 0;
     let isPreviousLoadBigger = false;
 
+    // Loop through the timeseries
     for (let i = 0; i < timeseries.length; i++) {
+
+      // Keep a reference of the start time if a data point has surpassed the
+      // CPU_HIGH_LOAD_THRESHOLD and check if the previous point did not surpass
+      // the threshold as well.
       if (this.cpuLoadThresholdReached(timeseries[i][1]) && !isPreviousLoadBigger) {
+        // Save the start time as it might be that we have found a potential high CPU
+        // load interval. Furthermore, set the isPreviousLoadBigger flag to true.
         startTime = timeseries[i][0];
         isPreviousLoadBigger = true;
-      }
+      } else if (!this.cpuLoadThresholdReached(timeseries[i][1]) && isPreviousLoadBigger) {
 
-      if (!this.cpuLoadThresholdReached(timeseries[i][1]) && isPreviousLoadBigger) {
-
+        // If the current data point hasn't surpassed the CPU_HIGH_LOAD_THRESHOLD, but we
+        // have a record of the preceding CPU load value going over the threshold, we keep
+        // the end time of the preceding data point. This marks the end time of a potential
+        // high CPU load time range.
         if (!endTime) endTime = timeseries[i][0];
 
-        if (this.cpuLoadDurationThresholdReached(timeseries[i][0], startTime) && this.cpuLoadRecoveryThresholdReached(timeseries[i][0], endTime)) {
-          interval.push(startTime, timeseries[i][0]);
+        // If both the CPU load duration threshold and the CPU load recovery thresholds have
+        // been reached, push the interval into the historical CPU load overview list
+        if (this.cpuLoadDurationThresholdReached(timeseries[i][0], startTime) &&
+            this.cpuLoadRecoveryThresholdReached(timeseries[i][0], endTime)) {
+          interval.push(startTime, endTime);
           let historicalCpuLoadOverviewCurrentValue = this.historicalCpuLoadOverview.value;
           let historicalCpuLoadOverviewUpdatedValue = [...historicalCpuLoadOverviewCurrentValue, interval];
           this.historicalCpuLoadOverview.next(historicalCpuLoadOverviewUpdatedValue);
-          // Resets
+          // And finally, resets.
           startTime = 0;
           endTime = 0;
           interval = [];

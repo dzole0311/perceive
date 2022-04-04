@@ -20,15 +20,15 @@ enum CpuLoadStates {
 
 const subjectMock = new Subject();
 const cpuPayloadMock = new BehaviorSubject<CpuLoadPayload>({
-      timeSeries: [[0, 0]],
-      systemOverview: {
-        platform: 'Loading...',
-        uptime: 0,
-        cpuCount: 0,
-        freeMemory: 0,
-        totalMemory: 0
-      }
-    });
+  timeSeries: [[0, 0]],
+  systemOverview: {
+    platform: 'Loading...',
+    uptime: 0,
+    cpuCount: 0,
+    freeMemory: 0,
+    totalMemory: 0
+  }
+});
 
 const websocketApiMock = {
   cpuPayload: cpuPayloadMock.asObservable(),
@@ -50,7 +50,7 @@ describe('CpuLoadMonitorService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should detect a high CPU load and trigger alerts', () => {
+  it('should detect a high CPU load and change state', () => {
     service.monitorCurrentCpuLoad(continuousHighLoadMock.timeSeries);
     expect(service.cpuLoadState.value).toBe(CpuLoadStates.HIGH_LOAD);
     expect(service.isCpuUnderHighLoad()).toBe(true);
@@ -60,20 +60,32 @@ describe('CpuLoadMonitorService', () => {
     service.generateHistoricalHighCpuOverview(normalLoadMock.timeSeries);
     expect(service.historicalCpuLoadOverview.value.length).toBe(0);
     service.generateHistoricalHighCpuOverview(multipleHighLoadMock.timeSeries);
-    // expect(service.historicalCpuLoadOverview.value.length).toBe(2);
+    expect(service.historicalCpuLoadOverview.value.length).toBe(1);
   });
 
-  it('should return true when the CPU threshold has been reached', () => {
+  it('should correctly detect if the CPU threshold has been reached or surpassed', () => {
+    expect(service.cpuLoadThresholdReached(101)).toBe(true);
+    expect(service.cpuLoadThresholdReached(45)).toBe(false);
     expect(service.cpuLoadThresholdReached(100)).toBe(true);
+    expect(service.cpuLoadThresholdReached(120)).toBe(true);
+    expect(service.cpuLoadThresholdReached(10)).toBe(false);
   });
 
-  it('should detect if the duration threshold has been surpassed', () => {
-    // The timestamps below are 2mins and 1s apart
-    expect(service.cpuLoadDurationThresholdReached(1649014021000, 1649013900000)).toBe(true);
+  it('should correctly detect if the duration threshold has been surpassed', () => {
+    // Timestamps are 2 minutes apart, which is the value of the CPU_LOAD_DURATION_THRESHOLD
+    expect(service.cpuLoadDurationThresholdReached(1649088120000, 1649088000000)).toBe(true);
+    // Timestamps are 1 minute apart, which is less than the CPU_LOAD_DURATION_THRESHOLD
+    expect(service.cpuLoadDurationThresholdReached(1649083800000, 1649083860000)).toBe(false);
+    // Timestamps are 2 minutes and 5 seconds apart, which is bigger than the CPU_LOAD_DURATION_THRESHOLD
+    expect(service.cpuLoadDurationThresholdReached(1649077625000, 1649077500000)).toBe(true);
   });
 
-  it('should detect if the recovery threshold has been surpassed', () => {
-    // The timestamps below are 2mins and 1s apart
-    expect(service.cpuLoadRecoveryThresholdReached(1649014021000, 1649013900000)).toBe(true);
+  it('should detect if the recovery threshold has been reached or surpassed', () => {
+    // Timestamps are 2 minutes apart, which is the value of the CPU_LOAD_DURATION_THRESHOLD
+    expect(service.cpuLoadRecoveryThresholdReached(1649088120000, 1649088000000)).toBe(true);
+    // Timestamps are 1 minute apart, which is less than the CPU_LOAD_DURATION_THRESHOLD
+    expect(service.cpuLoadRecoveryThresholdReached(1649083800000, 1649083860000)).toBe(false);
+    // Timestamps are 2 minutes and 5 seconds apart, which is bigger than the CPU_LOAD_DURATION_THRESHOLD
+    expect(service.cpuLoadRecoveryThresholdReached(1649077625000, 1649077500000)).toBe(true);
   });
 });
