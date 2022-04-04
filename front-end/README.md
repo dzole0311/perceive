@@ -1,4 +1,9 @@
-# Tech stack
+# Perceive
+
+Perceive is a browser-based CPU load monitoring application. It shows timeseries data over a 
+10 minute window.
+
+Quick start
 
 - Angular
   - Note: Initially I started with a vanilla JS observer + modules pattern, but things got a bit funky. To keep within the suggested timeframe for the project, I was thinking of choosing either Preact (the lightweight sibling of React) or Angular, 

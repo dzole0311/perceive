@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {WebsocketApiService} from "../../shared/services/websocket-api.service";
+import {CpuLoadPayload} from "../../shared/interfaces/interfaces";
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private websocketApi: WebsocketApiService) { }
 
   ngOnInit(): void {
-    this.websocketApi.cpuPayload.subscribe((msg) => {
+    this.websocketApi.cpuPayload.subscribe((msg: CpuLoadPayload) => {
       this.timeSeries = msg.timeSeries;
       this.systemOverview = msg.systemOverview;
     });
