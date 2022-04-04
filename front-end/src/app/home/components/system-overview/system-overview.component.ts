@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {CpuLoadPayload} from "../../../shared/interfaces/interfaces";
 import {formatBytes, formatTime} from '../../../shared/utils';
@@ -29,8 +29,17 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
     this.updateSystemOverviewDetails();
   }
 
-  ngOnChanges(): void {
-    this.updateSystemOverviewDetails();
+  ngOnChanges(changes: SimpleChanges): void {
+    // Update the system overview details each time the systemOverviewData @Input gets updated.
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        switch (propName) {
+          case 'systemOverviewData': {
+            this.updateSystemOverviewDetails();
+          }
+        }
+      }
+    }
   }
 
   updateSystemOverviewDetails() {

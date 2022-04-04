@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
-import {CpuLoadMonitorService} from '../../../shared/services/cpu-load-monitor.service';
 import {CPU_HIGH_LOAD_THRESHOLD} from "../../../shared/constants/constants";
 
 @Component({
@@ -12,7 +11,7 @@ export class ChartComponent implements OnInit, OnChanges {
   @Input() timeSeries: number[][];
   private chart: Highcharts.Chart;
 
-  constructor(private cpuMonitoringService: CpuLoadMonitorService) {
+  constructor() {
   }
 
   ngOnInit(): void {

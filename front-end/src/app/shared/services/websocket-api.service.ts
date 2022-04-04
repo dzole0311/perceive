@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {webSocket} from "rxjs/webSocket";
 import {BehaviorSubject} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {INTERVAL} from "../../../../../back-end/src/app/constants";
 
 interface CpuLoadPayload {
   timeSeries: number[][],
@@ -17,28 +18,21 @@ interface CpuLoadPayload {
   providedIn: 'root'
 })
 export class WebsocketApiService {
-  // BehaviorSubjects should provide an initial value.
+  // BehaviorSubjects should provide an initial value
   public cpuPayload = new BehaviorSubject<CpuLoadPayload>(this.initDefaults());
-  private subject = webSocket("ws://localhost:3000");
+  private cpuPayloadUrl = 'http://localhost:3000/cpu-metrics';
 
-  constructor() {
-    this.connect();
+  constructor(private http: HttpClient) {
+    // Start an interval that would regularly ping the back-end
+    // and retrieve the up-to-date CPU payload metrics
+    setInterval(() => {
+      this.fetchCpuPayload();
+    }, INTERVAL);
   }
 
-  connect() {
-    this.subject.subscribe(
-      msg => this.cpuPayload.next(<CpuLoadPayload>msg),
-      err => {
-        console.log('An error occurred, reconnecting...', err);
-        // Try to reconnect after a timeout, in case an error occurs
-        setTimeout(() => {
-          this.connect();
-        }, 1000);
-      },
-      () => {
-        console.log('complete');
-      }
-    );
+  fetchCpuPayload() {
+    return this.http.get<CpuLoadPayload>(this.cpuPayloadUrl)
+      .subscribe(result => this.cpuPayload.next(result));
   }
 
   /**

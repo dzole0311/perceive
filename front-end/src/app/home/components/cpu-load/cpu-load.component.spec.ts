@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CpuLoadComponent } from './cpu-load.component';
 
 describe('CpuLoadComponent', () => {
@@ -10,7 +9,7 @@ describe('CpuLoadComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ CpuLoadComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

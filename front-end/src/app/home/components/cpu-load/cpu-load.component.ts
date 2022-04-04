@@ -3,8 +3,7 @@ import * as Highcharts from "highcharts";
 
 @Component({
   selector: 'app-cpu-load',
-  templateUrl: './cpu-load.component.html',
-  styleUrls: ['./cpu-load.component.scss']
+  templateUrl: './cpu-load.component.html'
 })
 export class CpuLoadComponent implements OnInit, OnChanges {
   @Input() timeSeries: number[][];
@@ -17,7 +16,16 @@ export class CpuLoadComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.updateCpuLoadChart(this.timeSeries);
+    // Update the chart each time the timeSeries @Input gets updated.
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        switch (propName) {
+          case 'timeSeries': {
+            this.updateCpuLoadChart(this.timeSeries);
+          }
+        }
+      }
+    }
   }
 
   createCpuLoadChart() {

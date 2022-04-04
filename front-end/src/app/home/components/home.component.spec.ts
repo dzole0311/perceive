@@ -11,10 +11,10 @@ import {CpuCountComponent} from "./system-overview/cpu-count/cpu-count.component
 import {FreeMemoryComponent} from "./system-overview/free-memory/free-memory.component";
 import {PlatformComponent} from "./system-overview/platform/platform.component";
 import {UptimeComponent} from "./system-overview/uptime/uptime.component";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
-function mockToastService() {
-
-}
+// Mock of the ToastService, no need to be provided to the component
+function mockToastService() {}
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -22,6 +22,7 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       declarations: [
         HomeComponent,
         ChartComponent,

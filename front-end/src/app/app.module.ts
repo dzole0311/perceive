@@ -11,6 +11,7 @@ import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {HomeModule} from "./home/home.module";
 import {AboutModule} from "./about/about.module";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import {AboutModule} from "./about/about.module";
     HeaderComponent
   ],
   imports: [
+    HttpClientModule,
     HomeModule,
     AboutModule,
     ChartModule,

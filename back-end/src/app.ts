@@ -1,7 +1,5 @@
 import express, { Application } from 'express';
 import * as http from 'http';
-import * as WebSocket from 'ws';
-
 import { INTERVAL } from './app/constants';
 import { generateCpuPayload } from './app/utils';
 
@@ -9,26 +7,25 @@ import { generateCpuPayload } from './app/utils';
 // that can be used on Windows (or any other system that for some reasons does
 // not supports loadavg).
 const { windowsLoadAvg } = require('loadavg-windows');
+const cors = require('cors');
 
 const app: Application = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server: server });
+
+app.use(cors());
 
 const port: number = 3000;
 
 // Publish the whole payload once a connection from the front-end
 // has been opened
-wss.on('connection', (ws: WebSocket) => {
-    ws.send(JSON.stringify(generateCpuPayload()));
+app.get('/cpu-metrics', (req, res) => {
+  return res.send(generateCpuPayload());
 });
 
 // Start an interval that publishes an updated CPU payload
 // to the front-end via a websocket connection
 setInterval(() => {
-    let updatedCpuPayload = generateCpuPayload();
-    wss.clients.forEach((ws) => {
-        ws.send(updatedCpuPayload);
-    });
+    generateCpuPayload();
 }, INTERVAL);
 
 server.listen(port, () => {
