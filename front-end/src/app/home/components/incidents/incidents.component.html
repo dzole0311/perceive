@@ -1,15 +1,15 @@
 <div class="card">
   <div class="card__header">
-      <div class="card__notification">
-        <img class="card__notification-icon"
-             alt="CPU Load notification"
-             [ngClass]="{ 'blink' : isCpuUnderHighLoad()}"
-             [src]="isCpuUnderHighLoad() ? './assets/images/circle-exclamation-solid.svg' : './assets/images/circle-check-solid.svg'"/>
-        <span><strong>{{ isCpuUnderHighLoad() ? 'High CPU load detected' : 'The CPU load is currently stable' }}</strong></span>
-      </div>
+    <div class="card__notification">
+      <img class="card__notification-icon"
+           alt="CPU Load notification"
+           [ngClass]="{ 'blink' : isCpuUnderHighLoad()}"
+           [src]="isCpuUnderHighLoad() ? './assets/images/circle-exclamation-solid.svg' : './assets/images/circle-check-solid.svg'"/>
+      <span><strong>{{ isCpuUnderHighLoad() ? 'High CPU load detected' : 'The CPU load is currently stable' }}</strong></span>
+    </div>
   </div>
   <div class="card__body">
-    <span>Total recoveries in the past {{ timeWindow }}: <span> {{ historicalCpuLoadOverview?.length }}</span></span>
+    <span>{{ historicalCpuLoadOverview.length }} {{ historicalCpuLoadOverview.length === 1 ? 'recovery' : 'recoveries' }} in the last {{ timeWindow }}</span>
     <div class="card__item" *ngFor="let item of historicalCpuLoadOverview">
       <span>{{item[0] | date:'HH:mm:ss' }} - {{item[1] | date:'HH:mm:ss'}}</span>
       <span>

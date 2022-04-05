@@ -14,17 +14,4 @@
       color: var(--accent2-color);
     }
   }
-
-  &__nav {
-    display: flex;
-    align-items: center;
-    height: 100%;
-
-    a {
-      color: var(--accent2-color);
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: 500;
-    }
-  }
 }

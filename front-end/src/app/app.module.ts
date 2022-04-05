@@ -1,4 +1,4 @@
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { HighchartsChartModule } from 'highcharts-angular';
@@ -10,7 +10,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {HomeModule} from "./home/home.module";
-import {AboutModule} from "./about/about.module";
 import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
@@ -21,7 +20,6 @@ import {HttpClientModule} from "@angular/common/http";
   imports: [
     HttpClientModule,
     HomeModule,
-    AboutModule,
     ChartModule,
     BrowserModule,
     AppRoutingModule,
