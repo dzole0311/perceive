@@ -34,3 +34,25 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const result = parseFloat((bytes / Math.pow(kilobytes, i)).toFixed(decim));
   return result ? result : 0;
 }
+
+/**
+ * Takes the platform on which the app is running (eg. linux, win32, darwin)
+ * and returns a formatted string
+ *
+ * @param platform
+ */
+export const formatPlatform = (platform: string) => {
+  let platformFormatted = '';
+
+  if (platform === 'linux') {
+    platformFormatted = 'Linux';
+  } else if (platform === 'win32') {
+    platformFormatted = 'Windows';
+  } else if (platform === 'darwin') {
+    platformFormatted = 'OS X';
+  } else {
+    platformFormatted = 'Not supported'
+  }
+
+  return platformFormatted;
+}

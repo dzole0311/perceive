@@ -1,14 +1,13 @@
 import express, { Application } from 'express';
 import * as http from 'http';
 import * as WebSocket from 'ws';
-
 import {PUBLISH_INTERVAL} from './app/constants';
 import {
     generateEmptyTimeSeriesData,
     generateSystemOverviewData,
     updateTimeSeriesData
 } from './app/utils';
-import {CpuLoadPayload} from "../../front-end/src/app/shared/interfaces/interfaces";
+import {CpuLoadPayload} from './app/interfaces';
 
 // loadavg-windows serves as a platform-independent implementation of os.loadavg()
 // that can be used on Windows (or any other system that for some reasons does
@@ -35,9 +34,8 @@ wss.on('connection', (ws: WebSocket) => {
 });
 
 // Update the CPU payload every second, but serve it to the client based on the
-// PUBLISH_INTERVAL (the default is set to 10 seconds). Fixes an edge case where
-// the timestamps start to diverge for more than the time window (ten minutes)
-// after a while after a while.
+// PUBLISH_INTERVAL (the default is set to 10 seconds). It produces more points
+// which results in a smoother UX when hovering over the front-end chart.
 let counter = 0;
 
 setInterval(() => {

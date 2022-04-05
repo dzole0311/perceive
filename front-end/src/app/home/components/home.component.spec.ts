@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HomeComponent } from './home.component';
 import {ChartComponent} from "./chart/chart.component";
 import {CpuLoadComponent} from "./cpu-load/cpu-load.component";

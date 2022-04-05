@@ -95,13 +95,13 @@ export class CpuLoadMonitorService {
     // Update the historical high CPU overview each time the timeseries data
     // is updated. This keeps track of all high CPU load occurrences in the
     // last 10 minutes only, which is the fixed time window used by the app.
-    this.generateHistoricalHighCpuOverview(timeseries);
+    this.historicalCpuLoadOverview.next(this.generateHistoricalHighCpuOverview(timeseries));
   }
 
   /**
    * Indicates whether the CPU is under ongoing high load
    */
-  isCpuUnderHighLoad() {
+  isCpuUnderHighLoad(): boolean {
     return this.cpuLoadState.value === CpuLoadStates.HIGH_LOAD;
   }
 
@@ -110,7 +110,7 @@ export class CpuLoadMonitorService {
    *
    * @param cpuLoad
    */
-  cpuLoadThresholdReached(cpuLoad: number) {
+  cpuLoadThresholdReached(cpuLoad: number): boolean {
     return cpuLoad >= this.cpuHighLoadThreshold.value;
   }
 
@@ -120,7 +120,7 @@ export class CpuLoadMonitorService {
    * @param timestamp
    * @param highLoadStartTime
    */
-  cpuLoadDurationThresholdReached(timestamp: number, highLoadStartTime: number) {
+  cpuLoadDurationThresholdReached(timestamp: number, highLoadStartTime: number): boolean {
     return (timestamp - highLoadStartTime) / 1000 >= this.cpuHighLoadDurationThreshold.value;
   }
 
@@ -130,21 +130,18 @@ export class CpuLoadMonitorService {
    * @param timestamp
    * @param recoveryStartTime
    */
-  cpuLoadRecoveryThresholdReached(timestamp: number, recoveryStartTime: number) {
+  cpuLoadRecoveryThresholdReached(timestamp: number, recoveryStartTime: number): boolean {
     return (timestamp - recoveryStartTime) / 1000 >= this.cpuHighLoadDurationThreshold.value;
   }
 
   /**
    * Generates intervals [start, end] from all of the high cpu load occurrences
-   * in the past 10 minutes. The result is used by the incidents component to
-   * provide an overview of the past high CPU load cases.
+   * in the past 10 minutes, which will be shown in the incidents component as a list.
    *
    * @param timeseries
    */
-  generateHistoricalHighCpuOverview(timeseries: number[][]) {
-    // Reset the existing historical CPU overview data
-    this.historicalCpuLoadOverview.next([]);
-    let interval: number[] = [];
+  generateHistoricalHighCpuOverview(timeseries: number[][]): number[][]  {
+    let intervals: number[][] = [];
     let startTime = 0;
     let endTime = 0;
     let isPreviousLoadBigger = false;
@@ -172,17 +169,17 @@ export class CpuLoadMonitorService {
         if (this.cpuLoadDurationThresholdReached(timeseries[i][0], startTime) &&
           this.cpuLoadRecoveryThresholdReached(timeseries[i][0], endTime) &&
           (endTime - startTime) / 1000 > this.cpuHighLoadDurationThreshold.value) {
+          let interval = [];
           interval.push(startTime, endTime);
-          let historicalCpuLoadOverviewCurrentValue = this.historicalCpuLoadOverview.value;
-          let historicalCpuLoadOverviewUpdatedValue = [...historicalCpuLoadOverviewCurrentValue, interval];
-          this.historicalCpuLoadOverview.next(historicalCpuLoadOverviewUpdatedValue);
+          intervals.push(interval);
           // And finally, resets.
           startTime = 0;
           endTime = 0;
-          interval = [];
           isPreviousLoadBigger = false;
         }
       }
     }
+
+    return intervals;
   }
 }

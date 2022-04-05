@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {CpuLoadPayload} from "../../../shared/interfaces/interfaces";
-import {formatBytes, formatTime} from '../../../shared/utils';
+import {formatBytes, formatPlatform, formatTime} from '../../../shared/utils';
 
 
 @Component({
@@ -44,7 +44,7 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
 
   updateSystemOverviewDetails() {
     if (!this.systemOverviewData) return;
-    this.platform = this.systemOverviewData.platform;
+    this.platform = formatPlatform(this.systemOverviewData.platform);
     this.upTime = formatTime(this.systemOverviewData.uptime);
     this.cpuCount = this.systemOverviewData.cpuCount;
     this.freeMemory = this.systemOverviewData.freeMemory;

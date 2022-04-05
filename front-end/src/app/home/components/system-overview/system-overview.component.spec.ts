@@ -32,7 +32,7 @@ describe('SystemOverviewComponent', () => {
 
   it('should update the system overview details', () => {
     component.systemOverviewData = normalLoadMock.systemOverview;
-    expect(component.platform).toBe('linux');
+    expect(component.platform).toBe('Linux');
     expect(component.upTime).toBe('7.9 h');
     expect(component.cpuCount).toBe(12);
     expect(component.totalMemory).toBe(33276669952);

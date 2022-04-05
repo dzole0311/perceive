@@ -38,7 +38,7 @@ export class IncidentsComponent implements OnInit, OnDestroy {
 
       if (state === CpuLoadStates.HIGH_LOAD) {
         // We trigger a toast message of type 'info', since the
-        // high CPU load alert is simply an information for the user
+        // high CPU load alert is simply an information
         this.toast.info(ToastMessages.HIGH_LOAD);
       } else if (state === CpuLoadStates.RECOVERED) {
         this.toast.success(ToastMessages.RECOVERED);

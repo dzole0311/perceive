@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, HostListener, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { Chart} from "highcharts";
 import {SubtitleOptions} from 'highcharts';
@@ -89,6 +89,10 @@ export class CpuLoadComponent implements OnChanges {
       ...this.subtitleOptions
     };
 
+    // A boolean to trigger an update on a chart as Angular is not detecting
+    // nested changes in an object passed to a component. The [(update)] flag is
+    // specified in the docs for the official Highcharts wrapper for Angular:
+    // https://github.com/highcharts/highcharts-angular#options-details
     this.updateFlag = true;
     // Notify Angular to detect the changes and update the chart
     this.ref.detectChanges();

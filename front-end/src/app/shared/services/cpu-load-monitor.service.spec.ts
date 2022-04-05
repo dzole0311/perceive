@@ -7,6 +7,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {WebsocketApiService} from "./websocket-api.service";
 import {BehaviorSubject, Subject} from "rxjs";
 import {CpuLoadPayload} from "../interfaces/interfaces";
+import {CPU_HIGH_LOAD_DURATION, CPU_HIGH_LOAD_THRESHOLD} from "../constants/constants";
 
 enum CpuLoadStates {
   DEFAULT,
@@ -41,6 +42,8 @@ describe('CpuLoadMonitorService', () => {
       providers: [{ provide: WebsocketApiService, useValue: websocketApiMock } ]
     });
     service = TestBed.inject(CpuLoadMonitorService);
+    service.cpuHighLoadThreshold.next(CPU_HIGH_LOAD_THRESHOLD);
+    service.cpuHighLoadDurationThreshold.next(CPU_HIGH_LOAD_DURATION);
   });
 
   it('should be created', () => {
@@ -56,8 +59,10 @@ describe('CpuLoadMonitorService', () => {
   it('should report the correct number of historical high CPU load occurrences', () => {
     service.generateHistoricalHighCpuOverview(normalLoadMock.timeSeries);
     expect(service.historicalCpuLoadOverview.value.length).toBe(0);
-    service.generateHistoricalHighCpuOverview(multipleHighLoadMock.timeSeries);
-    expect(service.historicalCpuLoadOverview.value.length).toBe(2);
+    service.cpuHighLoadThreshold.next(100);
+    service.cpuHighLoadDurationThreshold.next(2);
+    let variable = service.generateHistoricalHighCpuOverview(multipleHighLoadMock.timeSeries);
+    expect(variable.length).toBe(3);
   });
 
   it('should correctly detect if the CPU threshold has been reached or surpassed', () => {

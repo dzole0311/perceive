@@ -60,32 +60,32 @@ Perceive is a web-based CPU load monitoring application. It tracks the current a
 * Node.js ( > v12.22.4)
 
 
-### Run the back-end API:
+### Run the local service API:
 
 
 ```sh
-   // Navigate to the back-end directory
+// Navigate to perceive/api and run:
    
-   npm install
+npm install
 
-   // Start the back-end API
+// Start the server
 
-   npm run dev
+npm run dev
    ```
 
 ### Run the front-end:
 
 
 ```sh
-   // Navigate to the front-end directory
+// Navigate to perceive/front-end and run:
    
-   npm install
+ npm install
 
-   // Start the front-end
+ // Start the front-end
 
-   ng serve
+ ng serve
 
-   // Open a browser and navigate to http://localhost:4200/
+ // Open a browser and navigate to http://localhost:4200/
    ```
 
 ## Testing
@@ -93,17 +93,36 @@ Perceive is a web-based CPU load monitoring application. It tracks the current a
 For smoother chart updates, the PUBLISH_INTERVAL threshold could be reduced to 1 second instead of the required 10 seconds:
 
 ```sh   
-   export const PUBLISH_INTERVAL = 1;
+export const PUBLISH_INTERVAL = 1;
    ```
 
-Note: The app was developed and mostly tested on Ubuntu using Chrome, with few tests on Windows as well.
+Note: The app was developed and tested mostly on Ubuntu by using Chrome, with few tests on Windows as well.
 
 ### Running the Jasmine unit tests:
 
 ```sh
-   // Navigate to the front-end directory and run
+// Navigate to the front-end directory and run
    
-   ng test
+ng test
+   ```
+
+### Changing the thresholds
+
+The thresholds for the duration and high CPU load can be easily changed by modifying their respective constants:
+
+```sh   
+export const CPU_HIGH_LOAD_THRESHOLD = 100;
+
+export const CPU_HIGH_LOAD_DURATION = 120;
+   ```
+
+
+### For Ubuntu
+
+On Ubuntu, there is an easy way to stress the CPU by calling something like this from the terminal:
+
+```sh
+stress --cpu 8
    ```
 
 
@@ -113,11 +132,15 @@ Note: The app was developed and mostly tested on Ubuntu using Chrome, with few t
 <!-- ROADMAP -->
 ## Roadmap
 
-- Introduce adjustable thresholds for the duration, high load 
-- Highlight the high CPU load ranges in the chart as well
-- Improve the test coverage for production and add e2e tests
-- I18N for an improved localization and multi-language support
+This proof of concept could be further extended and optimized. Some ideas:
 
+- Improve the test coverage for production and add e2e tests
+- Introduce adjustable configuration for the duration and high load thresholds. A stepper component with increment and decrement funcitonality could be useful in this scenario
+- Make use of the web Push API, which could push notifications to the web app from a server. This is especially good when the web app is not in the foreground
+- Highlight the high CPU load ranges in the chart. One approach would be to use plot bands in Highcharts
+- Allow users to zoom in on a selected area in the chart
+- I18N for an improved localization and multi-language support
+- In terms of product branding, the logo, colors and other assets need to be tweaked accordingly
 
 <!-- PROJECT STRUCTURE -->
 ## Project structure
@@ -165,3 +188,12 @@ Note: The app was developed and mostly tested on Ubuntu using Chrome, with few t
 
 <!-- SCREENSHOTS -->
 ## Screenshots
+
+### Stable state
+![alt text](screenshots/stable-state.png "DEFAULT")
+
+### High load state
+![alt text](screenshots/high-load-state.png "HIGH_LOAD")
+
+### Recovered state
+![alt text](screenshots/recovered-state.png "RECOVERED")
