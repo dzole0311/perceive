@@ -78,7 +78,7 @@ export class ChartComponent implements OnChanges {
         return `<div class="tooltip">
                     <div class="tooltip__box">
                         <span class="tooltip__description">CPU load: </span>
-                        <span class="tooltip__value"><strong>${Math.round(<number>this.y)}%</strong></span>
+                        <span class="tooltip__value"><strong>${Math.round(<number>this.y * 100) / 100}%</strong></span>
                     </div>
                       <div class="tooltip__box">
                         <span class="tooltip__description">Time: </span>
