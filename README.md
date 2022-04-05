@@ -12,39 +12,8 @@
 </div>
 
 
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
 <!-- ABOUT THE PROJECT -->
 ## About
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 Perceive is a web-based CPU load monitoring application. It tracks the current average CPU load and visualizes its changes across a 10 minute time window chart. Also, it show few other details about the system that it's running on, like the platform, uptime, cpu count, free and total memory.
 
@@ -119,19 +88,22 @@ Perceive is a web-based CPU load monitoring application. It tracks the current a
    // Open a browser and navigate to http://localhost:4200/
    ```
 
-### Running the Jasmine tests:
-
-```sh
-   // Navigate to the front-end directory and run
-   
-   ng test
-   ```
-
+## Testing
+The app is developed and mostly tested on Ubuntu, with 
 
 For smoother chart updates, the PUBLISH_INTERVAL threshold can be reduced to 1 second:
 
 ```sh   
    export const PUBLISH_INTERVAL = 1;
+   ```
+
+
+### Running the Jasmine unit tests:
+
+```sh
+   // Navigate to the front-end directory and run
+   
+   ng test
    ```
 
 
@@ -149,7 +121,47 @@ For smoother chart updates, the PUBLISH_INTERVAL threshold can be reduced to 1 s
 
 <!-- PROJECT STRUCTURE -->
 ## Project structure
+```text
+├── back-end
+│   ├── src
+│   │   ├── app
+│   │   │   ├── constants.ts
+│   │   │   └── utils.ts
+│   │   └── app.ts
+├── front-end
+│   ├── src
+│   │   ├── app
+│   │   │   ├── app.module.ts
+│   │   │   ├── app-routing.module.ts
+│   │   │   ├── home
+│   │   │   │   ├── components
+│   │   │   │   │   ├── chart
+│   │   │   │   │   ├── cpu-load
+│   │   │   │   │   ├── incidents
+│   │   │   │   │   └── system-overview
+│   │   │   │   │       ├── card-media
+│   │   │   │   │       ├── cpu-count
+│   │   │   │   │       ├── free-memory
+│   │   │   │   │       ├── platform
+│   │   │   │   │       └── uptime
+│   │   │   │   └── home.module.ts
+│   │   │   └── shared
+│   │   │       ├── components
+│   │   │       ├── constants
+│   │   │       ├── interfaces
+│   │   │       ├── services
+│   │   │       └── utils.ts
+│   │   ├── assets
+│   │   │   ├── fonts
+│   │   │   ├── images
+│   │   │   ├── mocks
+│   │   │   └── stylesheets
+│   │   ├── environments
+│   │   ├── index.html
+│   ├── tsconfig.json
+└── README.md
 
+```
 
 <!-- SCREENSHOTS -->
 ## Screenshots
