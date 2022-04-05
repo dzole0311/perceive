@@ -75,7 +75,7 @@ export class CpuLoadMonitorService {
       }
     } else if (this.isCpuUnderHighLoad()) {
 
-      if (!this.cpuLoadDroppedBelowThreshold(currentCpuLoad)) {
+      if (!this.cpuLoadThresholdReached(currentCpuLoad)) {
 
         // Save the start time when the CPU load started to normalize again
         if (!this.cpuRecoveryStartTime) {
@@ -112,15 +112,6 @@ export class CpuLoadMonitorService {
    */
   cpuLoadThresholdReached(cpuLoad: number) {
     return cpuLoad >= this.cpuHighLoadThreshold.value;
-  }
-
-  /**
-   * Indicates whether the CPU load dropped below the high load threshold
-   *
-   * @param cpuLoad
-   */
-  cpuLoadDroppedBelowThreshold(cpuLoad: number) {
-    return cpuLoad < this.cpuHighLoadThreshold.value;
   }
 
   /**
@@ -169,7 +160,7 @@ export class CpuLoadMonitorService {
         // load interval. Furthermore, set the isPreviousLoadBigger flag to true.
         startTime = timeseries[i][0];
         isPreviousLoadBigger = true;
-      } else if (this.cpuLoadDroppedBelowThreshold(timeseries[i][1]) && isPreviousLoadBigger) {
+      } else if (!this.cpuLoadThresholdReached(timeseries[i][1]) && isPreviousLoadBigger) {
 
         // If the current data point dropped below the CPU_HIGH_LOAD_THRESHOLD, but we
         // have a record of the preceding CPU load value going over the threshold, we keep

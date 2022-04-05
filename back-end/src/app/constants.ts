@@ -2,7 +2,7 @@
 export const TIME_WINDOW = 600;
 
 // The interval in which the websocket publishes to the UI
-export const PUBLISH_INTERVAL = 10;
+export const PUBLISH_INTERVAL = 1;
 
 // Number of points to create per iteration when creating the
 // empty time series data

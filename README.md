@@ -89,14 +89,14 @@ Perceive is a web-based CPU load monitoring application. It tracks the current a
    ```
 
 ## Testing
-The app is developed and mostly tested on Ubuntu, with 
 
-For smoother chart updates, the PUBLISH_INTERVAL threshold can be reduced to 1 second:
+For smoother chart updates, the PUBLISH_INTERVAL threshold could be reduced to 1 second instead of the required 10 seconds:
 
 ```sh   
    export const PUBLISH_INTERVAL = 1;
    ```
 
+Note: The app was developed and mostly tested on Ubuntu using Chrome, with few tests on Windows as well.
 
 ### Running the Jasmine unit tests:
 
@@ -113,7 +113,7 @@ For smoother chart updates, the PUBLISH_INTERVAL threshold can be reduced to 1 s
 <!-- ROADMAP -->
 ## Roadmap
 
-- Introduce adjustable thresholds
+- Introduce adjustable thresholds for the duration, high load 
 - Highlight the high CPU load ranges in the chart as well
 - Improve the test coverage for production and add e2e tests
 - I18N for an improved localization and multi-language support
