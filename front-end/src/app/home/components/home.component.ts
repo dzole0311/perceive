@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {WebsocketApiService} from "../../shared/services/websocket-api.service";
 import {CpuLoadPayload} from "../../shared/interfaces/interfaces";
 import {Subscription} from "rxjs";

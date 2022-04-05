@@ -5,7 +5,6 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {CpuLoadMonitorService} from '../../../shared/services/cpu-load-monitor.service';
 import {BehaviorSubject} from "rxjs";
 import {By} from "@angular/platform-browser";
-import * as multipleHighLoadMockData from "../../../../assets/mocks/multiple-high-load-occurrences-mock.json";
 
 enum CpuLoadStates {
   DEFAULT,
@@ -13,24 +12,20 @@ enum CpuLoadStates {
   HIGH_LOAD,
 }
 
-const multipleHighLoadMock = multipleHighLoadMockData;
-
-const mockToastService = {
-  info: function() {},
-  success: function() {}
-}
-
-const cpuLoadStateMock: BehaviorSubject<CpuLoadStates> = new BehaviorSubject<CpuLoadStates>(CpuLoadStates.DEFAULT);
-const historicalCpuLoadOverviewMock: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([[0, 0]]);
-
-const cpuLoadMonitorServiceMock = {
-  cpuLoadState: cpuLoadStateMock.asObservable(),
-  historicalCpuLoadOverview: historicalCpuLoadOverviewMock.asObservable()
-};
-
 describe('IncidentsComponent', () => {
   let component: IncidentsComponent;
   let fixture: ComponentFixture<IncidentsComponent>;
+  // Empty mock for the ToastService
+  const mockToastService = {
+    success: function () {},
+    info: function () {}
+  }
+  const cpuLoadStateMock: BehaviorSubject<CpuLoadStates> = new BehaviorSubject<CpuLoadStates>(CpuLoadStates.DEFAULT);
+  const historicalCpuLoadOverviewMock: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([[0, 0]]);
+  const cpuLoadMonitorServiceMock = {
+    cpuLoadState: cpuLoadStateMock.asObservable(),
+    historicalCpuLoadOverview: historicalCpuLoadOverviewMock.asObservable()
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SystemOverviewComponent } from './system-overview.component';
 import {CardMediaComponent} from "./card-media/card-media.component";
 import {CpuCountComponent} from "./cpu-count/cpu-count.component";
@@ -8,11 +7,10 @@ import {PlatformComponent} from "./platform/platform.component";
 import {UptimeComponent} from "./uptime/uptime.component";
 import * as normalLoadMockData from "../../../../assets/mocks/normal-load-mock.json";
 
-const normalLoadMock = normalLoadMockData;
-
 describe('SystemOverviewComponent', () => {
   let component: SystemOverviewComponent;
   let fixture: ComponentFixture<SystemOverviewComponent>;
+  const normalLoadMock = normalLoadMockData;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,7 +32,7 @@ describe('SystemOverviewComponent', () => {
 
   it('should update the system overview details', () => {
     component.systemOverviewData = normalLoadMock.systemOverview;
-    expect(component.os).toBe('linux');
+    expect(component.platform).toBe('linux');
     expect(component.upTime).toBe('7.9 h');
     expect(component.cpuCount).toBe(12);
     expect(component.totalMemory).toBe(33276669952);

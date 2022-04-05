@@ -16,31 +16,35 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {WebsocketApiService} from "../../shared/services/websocket-api.service";
 import {BehaviorSubject, Subject} from "rxjs";
 import {CpuLoadPayload} from "../../shared/interfaces/interfaces";
-
-// Mock of the ToastService, no need to be provided to the component
-function mockToastService() {}
-
-const subjectMock = new Subject();
-const cpuPayloadMock = new BehaviorSubject<CpuLoadPayload>({
-  timeSeries: [[0, 0]],
-  systemOverview: {
-    platform: 'Loading...',
-    uptime: 0,
-    cpuCount: 0,
-    freeMemory: 0,
-    totalMemory: 0
-  }
-});
-
-// Mock the Websocket connection
-const websocketApiMock = {
-  cpuPayload: cpuPayloadMock.asObservable(),
-  subject: subjectMock.asObservable()
-}
+import * as normalLoadMockData from '../../../assets/mocks/normal-load-mock.json';
+import {TIME_WINDOW} from "../../shared/constants/constants";
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  const normalLoadMock = normalLoadMockData;
+  // Empty mock for the ToastService
+  const mockToastService = {
+    success: function () {},
+    info: function () {}
+  }
+  // Mock the websocket subject and the CPU payload
+  const subjectMock = new Subject();
+  const cpuPayloadMock = new BehaviorSubject<CpuLoadPayload>({
+    timeSeries: [[0, 0]],
+    systemOverview: {
+      platform: 'Loading...',
+      uptime: 0,
+      cpuCount: 0,
+      freeMemory: 0,
+      totalMemory: 0
+    }
+  });
+  // Mock the Websocket API
+  const websocketApiMock = {
+    cpuPayload: cpuPayloadMock.asObservable(),
+    subject: subjectMock.asObservable()
+  }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -73,5 +77,19 @@ describe('HomeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update the timeseries data', () => {
+    cpuPayloadMock.next(normalLoadMock);
+    expect(component.timeSeries.length).toBe(TIME_WINDOW);
+  });
+
+  it('should update the system overview data', () => {
+    cpuPayloadMock.next(normalLoadMock);
+    expect(component.systemOverview['platform']).toBe('linux');
+    expect(component.systemOverview['uptime']).toBe(28356);
+    expect(component.systemOverview['cpuCount']).toBe(12);
+    expect(component.systemOverview['freeMemory']).toBe(20498292736);
+    expect(component.systemOverview['totalMemory']).toBe(33276669952);
   });
 });

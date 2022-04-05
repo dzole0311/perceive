@@ -16,7 +16,7 @@ import {formatBytes, formatTime} from '../../../shared/utils';
 })
 export class SystemOverviewComponent implements OnInit, OnChanges {
   @Input() systemOverviewData: CpuLoadPayload['systemOverview'];
-  public os: string = '';
+  public platform: string = '';
   public upTime: string = '';
   public cpuCount: number = 0;
   public totalMemory: number = 0;
@@ -44,7 +44,7 @@ export class SystemOverviewComponent implements OnInit, OnChanges {
 
   updateSystemOverviewDetails() {
     if (!this.systemOverviewData) return;
-    this.os = this.systemOverviewData.platform;
+    this.platform = this.systemOverviewData.platform;
     this.upTime = formatTime(this.systemOverviewData.uptime);
     this.cpuCount = this.systemOverviewData.cpuCount;
     this.freeMemory = this.systemOverviewData.freeMemory;
