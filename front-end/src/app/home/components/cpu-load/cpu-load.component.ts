@@ -85,7 +85,7 @@ export class CpuLoadComponent implements OnChanges {
 
     // Update the subtitle centered in the middle of the pie-chart
     this.chartOptions.subtitle = {
-      text: Math.round(timeseriesMostRecentItem[1]).toString() + '%',
+      text: timeseriesMostRecentItem[1] > 0 ? Math.round(timeseriesMostRecentItem[1]).toString() + '%' : '0%',
       ...this.subtitleOptions
     };
 
